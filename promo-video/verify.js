@@ -20,7 +20,7 @@ const { ROOT, launch } = require('./lib/browser');
     window.__v = v; return r;
   }, 'file://' + file);
   console.log(info);
-  const times = [2.4, 10.8, 16.0, 23.0, 35.0, 44.0, 50.5, 55.0, 58.6];
+  const times = [1.4, 3.2, 7.4, 11.2, 15.0, 19.2, 24.0, 34.0, 48.0, 57.5];
   for (const t of times) {
     await p.evaluate(t => new Promise(r => { __v.onseeked = r; __v.currentTime = t; }), t);
     await p.waitForTimeout(150);

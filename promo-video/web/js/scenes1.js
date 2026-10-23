@@ -28,19 +28,19 @@ addScene({
     };
   },
   update(lt, c, dur, root, at) {
-    transition(root, lt, dur, 'fade', 'fade', 0.5, 0.45);
-    const pin = E.o4(prog(lt, 0.25, 1.5));
+    transition(root, lt, dur, 'fade', 'fade', 0.8, 0.6);
+    const pin = E.o4(prog(lt, 0.3, 2.1));
     tf(c.person, `translateY(${((1 - pin) * 190).toFixed(1)}px) scale(${lerp(0.9, 1, pin).toFixed(4)})`);
-    op(c.person, prog(lt, 0.25, 0.9));
+    op(c.person, prog(lt, 0.3, 1.3));
     op(c.shadow, pin * 0.9);
     tf(c.shadow, `scaleX(${lerp(0.6, 1, pin).toFixed(3)})`);
     personPose(c.p, at, 0);
-    op(c.spot, prog(lt, 0, 0.8) * 0.9);
-    quesAnim(c.pq, lt, 1.9, 0.13);
-    op(c.eyebrow, prog(lt, 0.9, 1.4));
-    riseIn(c.t1, lt, 1.15, { stagger: 0.035, dur: 0.75, y: 70, ease: E.o4 });
-    riseIn(c.t2, lt, 2.1, { stagger: 0.07, dur: 0.6, y: 36 });
-    tf(c.cam, `scale(${lerp(1, 1.045, lt / dur).toFixed(4)})`);
+    op(c.spot, prog(lt, 0, 1.2) * 0.9);
+    quesAnim(c.pq, lt, 2.5, 0.17);
+    op(c.eyebrow, prog(lt, 1.2, 1.9));
+    riseIn(c.t1, lt, 1.6, { stagger: 0.045, dur: 0.9, y: 70, ease: E.o4 });
+    riseIn(c.t2, lt, 2.9, { stagger: 0.085, dur: 0.7, y: 36 });
+    tf(c.cam, `scale(${lerp(1, 1.05, E.io3(lt / dur)).toFixed(4)})`);
   },
 });
 
@@ -78,7 +78,7 @@ addScene({
     };
   },
   update(lt, c, dur, root, at) {
-    transition(root, lt, dur, 'zoomOut', 'fade', 0.5, 0.45);
+    transition(root, lt, dur, 'zoomOut', 'fade', 0.6, 0.5);
     const k = lt / dur;
     const tilt = 50 - k * 5;
     c.plane.style.transform = `translateZ(${lerp(-150, 50, E.io3(k)).toFixed(1)}px) rotateX(${tilt}deg) rotateZ(${(-5 + k * 3).toFixed(2)}deg)`;
@@ -158,7 +158,7 @@ addScene({
     };
   },
   update(lt, c, dur, root, at) {
-    transition(root, lt, dur, 'fade', 'fade', 0.5, 0.45);
+    transition(root, lt, dur, 'fade', 'fade', 0.55, 0.5);
     personPose(c.p, at, 0);
     const pe = E.o4(prog(lt, 0, 0.6));
     tf(c.pEl, `scale(${lerp(0.92, 1, pe).toFixed(4)})`);

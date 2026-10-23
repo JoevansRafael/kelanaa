@@ -15,7 +15,7 @@ window.renderAudio = async function () {
   const master = ctx.createGain(); master.gain.value = 0.9;
   comp.connect(limiter); limiter.connect(master); master.connect(ctx.destination);
   // master fade out
-  master.gain.setValueAtTime(0.9, 58.4); master.gain.linearRampToValueAtTime(0.0, 60.0);
+  master.gain.setValueAtTime(0.9, 58.6); master.gain.linearRampToValueAtTime(0.0, 60.0);
 
   const mkIR = (sec, decay) => {
     const b = ctx.createBuffer(2, SR * sec, SR);
@@ -200,19 +200,19 @@ window.renderAudio = async function () {
   /* ---- ACT 1: slow tension build (0 – 14.4) ---- */
   [38, 50].forEach((n, i) => {
     const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = midi(n); o.detune.value = i ? 6 : -4;
-    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(200, 0); lp.frequency.linearRampToValueAtTime(950, 14.2);
-    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, 0); g.gain.linearRampToValueAtTime(0.08, 1.6); g.gain.linearRampToValueAtTime(0.13, 14.0); g.gain.linearRampToValueAtTime(0.0001, 14.5);
-    o.connect(lp); lp.connect(g); out(g, music, i ? 0.3 : -0.3, 0.2); o.start(0); o.stop(14.6);
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(200, 0); lp.frequency.linearRampToValueAtTime(950, T.s5 - 0.2);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, 0); g.gain.linearRampToValueAtTime(0.08, 1.6); g.gain.linearRampToValueAtTime(0.13, T.s5 - 0.4); g.gain.linearRampToValueAtTime(0.0001, T.s5 + 0.1);
+    o.connect(lp); lp.connect(g); out(g, music, i ? 0.3 : -0.3, 0.2); o.start(0); o.stop(T.s5 + 0.2);
   });
-  pad(T.s3, [62, 63, 69], 4.6, 0.028, 1400, music);
-  for (let t = 1.0; t < 14.4; t += 0.25) hat(t, 0.025 + 0.05 * (t / 14.4), false, (Math.floor(t * 4) % 2 ? 0.3 : -0.3));
-  for (let t = T.s2; t < 14.3; t += BEAT) { kick(t, 0.42, false); if (t > 10.5) kick(t + 0.2, 0.26, false); }
-  for (let t = T.s3; t < 14.3; t += 0.25) bassNote(t, midi(38), 0.2, 0.11);
-  for (let t = 13.0; t < 14.4; t += 0.14) snare(t, 0.05 + (t - 13.0) * 0.1);
+  pad(T.s3, [62, 63, 69], T.s5 - T.s3, 0.028, 1400, music);
+  for (let t = 1.0; t < T.s5; t += 0.25) hat(t, 0.025 + 0.05 * (t / T.s5), false, (Math.floor(t * 4) % 2 ? 0.3 : -0.3));
+  for (let t = T.s2; t < T.s5 - 0.1; t += BEAT) { kick(t, 0.42, false); if (t > T.s3 + 2.0) kick(t + 0.2, 0.26, false); }
+  for (let t = T.s3; t < T.s5 - 0.1; t += 0.25) bassNote(t, midi(38), 0.2, 0.11);
+  for (let t = T.s4 + 0.8; t < T.s5; t += 0.14) snare(t, 0.05 + (t - T.s4 - 0.8) * 0.1);
 
   /* ---- calm -> logo (14.4 – 19.6) ---- */
-  pad(T.s5, [53, 57, 60, 64, 67], 2.6, 0.035, 1600, music);
-  pad(T.s6, [41, 53, 57, 60, 65], 3.4, 0.042, 2400, music);
+  pad(T.s5, [53, 57, 60, 64, 67], T.s6 - T.s5 + 0.6, 0.035, 1600, music);
+  pad(T.s6, [41, 53, 57, 60, 65], T.s6e - T.s6 + 0.4, 0.042, 2400, music);
   bassNote(T.s6, midi(29), 3.0, 0.3);
   for (let i = 0; i < 24; i++) { const notes = [65, 69, 72, 76, 77, 76, 72, 69]; pluck(T.s6 + i * 0.125, midi(notes[i % 8]), 0.05 + i * 0.002, (i % 2 ? 0.4 : -0.4), 2400); }
 
@@ -243,7 +243,7 @@ window.renderAudio = async function () {
   riser(T.s14 + 0.3, T.s14e - 0.2, 0.26, 300, 6000);
   for (let t = T.s22 - 1.0; t < T.s22; t += (t < T.s22 - 0.5 ? 0.125 : 0.0625)) snare(t, 0.08 + (t - (T.s22 - 1.0)) * 0.2);
   riser(T.s22 - 1.1, T.s22, 0.3);
-  pad(T.s23, [41, 53, 57, 60, 64, 65], 4.0, 0.045, 2200, music);
+  pad(T.s23, [41, 53, 57, 60, 64, 65], T.s23e - T.s23, 0.045, 2200, music);
   bassNote(T.s23, midi(29), 3.0, 0.3);
   [65, 69, 72, 76, 79, 81, 84].forEach((n, i) => bell(T.s23 + 0.25 + i * 0.12, midi(n), 0.07, 2.4, (i - 3) * 0.2, 0.6));
 

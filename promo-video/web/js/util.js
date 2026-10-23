@@ -195,26 +195,26 @@ function addScene(def) { SCENES.push(def); }
 /* ======================  Master timeline (seconds)  ======================
    Scenes overlap by ~0.4 s so every cut is a real transition, not a jump. */
 const T = {
-  // ACT 1 — problem, with the confused traveller
-  s1: 0.0, s1e: 4.2,     // "Mau liburan?" — character appears
-  s2: 3.8, s2e: 8.2,     // "Tapi… mau ke mana?" — map of options
-  s3: 7.8, s3e: 12.4,    // research chaos piles up
-  s4: 12.0, s4e: 14.8,   // budget blows up -> "nggak jadi liburan"
-  s5: 14.4, s5e: 16.8,   // "Tenang." — calm
-  s6: 16.4, s6e: 19.6,   // logo reveal
-  // ACT 2 — feature 01: custom itinerary
-  s11: 19.2, s11e: 21.8,
-  s12: 21.4, s12e: 26.8, // form: ke mana & kapan, sama siapa, budget
-  s13: 26.4, s13e: 30.6, // form: minat & tempo
-  s14: 30.2, s14e: 32.6, // engine
-  s15: 32.2, s15e: 38.0, // result itinerary
-  s16: 37.6, s16e: 40.6, // route map
+  // ACT 1 — problem, led by the confused traveller (opening deliberately unhurried)
+  s1: 0.0, s1e: 5.4,     // "Mau liburan?" — character settles in, long hold
+  s2: 5.0, s2e: 9.4,     // "Tapi… mau ke mana?" — too many options
+  s3: 9.0, s3e: 13.4,    // research chaos piles up around him
+  s4: 13.0, s4e: 15.6,   // budget blows up -> "nggak jadi liburan"
+  s5: 15.2, s5e: 17.4,   // "Tenang." — he calms down
+  s6: 17.0, s6e: 20.0,   // logo reveal
+  // ACT 2 — feature 01: custom itinerary (longest act)
+  s11: 19.6, s11e: 22.0,
+  s12: 21.6, s12e: 26.8, // form: ke mana & kapan, sama siapa, budget
+  s13: 26.4, s13e: 30.4, // form: minat & tempo
+  s14: 30.0, s14e: 32.2, // engine
+  s15: 31.8, s15e: 37.4, // result itinerary
+  s16: 37.0, s16e: 39.8, // route map
   // ACT 3 — feature 02: guide booking
-  s17: 40.2, s17e: 42.8,
-  s18: 42.4, s18e: 47.2, // verified guides
-  s19: 46.8, s19e: 52.4, // profile + booking -> into itinerary
+  s17: 39.4, s17e: 41.8,
+  s18: 41.4, s18e: 46.0, // verified guides
+  s19: 45.6, s19e: 51.2, // profile + booking -> into itinerary
   // ACT 4 — resolution & CTA
-  s21: 52.0, s21e: 54.4, // dashboard
-  s22: 54.0, s22e: 56.4, // destination montage
-  s23: 56.0, s23e: 60.0, // end card
+  s21: 50.8, s21e: 53.0, // dashboard
+  s22: 52.6, s22e: 55.0, // destination montage
+  s23: 54.6, s23e: 60.0, // end card, long hold on the CTA
 };
