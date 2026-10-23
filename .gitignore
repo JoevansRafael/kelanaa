@@ -1,0 +1,5 @@
+promo-video/out/frames/
+promo-video/out/stills/
+promo-video/.chrome-tmp/
+promo-video/out/sheet*
+node_modules/

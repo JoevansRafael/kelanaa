@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Kelana Promo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <filter id="mblurX" x="-20%" y="-5%" width="140%" height="110%"><feGaussianBlur stdDeviation="28 0"/></filter>
+    <filter id="mblurY" x="-5%" y="-20%" width="110%" height="140%"><feGaussianBlur stdDeviation="0 28"/></filter>
+    <filter id="rgbsplit" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
+      <feOffset in="r" dx="-12" dy="0" result="r2"/>
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="gb"/>
+      <feOffset in="gb" dx="12" dy="0" result="gb2"/>
+      <feBlend in="r2" in2="gb2" mode="screen"/>
+    </filter>
+  </defs>
+</svg>
+<div id="stage">
+  <canvas id="bg" width="1920" height="1080"></canvas>
+  <div id="scenes"></div>
+  <div id="caption"><div class="cap-inner"><span class="cap-num"></span><span class="cap-text"></span></div></div>
+  <div id="vignette"></div>
+  <div id="grain"></div>
+  <div id="flash"></div>
+  <div id="letterbox"></div>
+</div>
+<script src="js/util.js"></script>
+<script src="js/art.js"></script>
+<script src="js/scenes1.js"></script>
+<script src="js/scenes2.js"></script>
+<script src="js/scenes3.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
