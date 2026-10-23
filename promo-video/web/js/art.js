@@ -326,3 +326,98 @@ function indoDots(step = 9) {
   }
   return (__dots = dots);
 }
+
+/* =========================================================
+   The traveller character — flat vector illustration.
+   Animatable parts: head tilt, raised arm (scratching), brows,
+   mouth, eyes (blink), plus a confused <-> calm mood crossfade.
+   ========================================================= */
+const CH = { skin: '#E8B183', skinSh: '#CE8E5C', hair: '#241E1B', tee: '#35A8FF', teeSh: '#2A80C4', strap: '#1E3A5F' };
+function personSVG() {
+  // unique paint-server ids: several characters coexist in one document
+  const g1 = gid('pTee'), g2 = gid('pSkin');
+  return `<svg viewBox="0 0 800 900" style="width:100%;height:100%;display:block;overflow:visible">
+    <defs>
+      <linearGradient id="${g1}" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="${CH.tee}"/><stop offset="1" stop-color="${CH.teeSh}"/></linearGradient>
+      <linearGradient id="${g2}" x1="0" y1="0" x2="0.2" y2="1"><stop offset="0" stop-color="${CH.skin}"/><stop offset="1" stop-color="${CH.skinSh}"/></linearGradient>
+    </defs>
+
+    <g class="p-body">
+      <path d="M400,474 C302,474 252,544 234,644 L208,900 L592,900 L566,644 C548,544 498,474 400,474Z" fill="url(#${g1})"/>
+      <path d="M330,486 L306,900" stroke="${CH.strap}" stroke-width="30" opacity=".4"/>
+      <path d="M470,486 L494,900" stroke="${CH.strap}" stroke-width="30" opacity=".26"/>
+      <path d="M344,480 C372,524 428,524 456,480 C440,472 420,468 400,468 C380,468 360,472 344,480Z" fill="${CH.skinSh}"/>
+    </g>
+
+    <g class="p-armL" style="transform-origin:272px 548px">
+      <path d="M270,552 C214,614 206,696 232,752" stroke="url(#${g1})" stroke-width="62" fill="none" stroke-linecap="round"/>
+      <ellipse cx="236" cy="766" rx="40" ry="34" fill="url(#${g2})" transform="rotate(-18 236 766)"/>
+    </g>
+
+    <path d="M366,392 h68 v92 h-68Z" fill="${CH.skinSh}"/>
+
+    <g class="p-head" style="transform-origin:400px 470px">
+      <ellipse cx="288" cy="302" rx="21" ry="29" fill="${CH.skinSh}"/>
+      <ellipse cx="512" cy="302" rx="21" ry="29" fill="${CH.skinSh}"/>
+      <ellipse cx="400" cy="288" rx="113" ry="127" fill="url(#${g2})"/>
+      <path d="M287,266 C287,162 334,128 400,128 C466,128 513,162 513,268 C513,218 486,198 400,198 C314,198 287,218 287,266Z" fill="${CH.hair}"/>
+      <ellipse class="p-eyeL" cx="358" cy="298" rx="13" ry="17" fill="#1F2937" style="transform-origin:358px 298px"/>
+      <ellipse class="p-eyeR" cx="444" cy="298" rx="13" ry="17" fill="#1F2937" style="transform-origin:444px 298px"/>
+      <g class="p-browC" stroke="${CH.hair}" stroke-width="12" stroke-linecap="round" fill="none">
+        <path d="M330,262 C344,248 366,246 382,256"/><path d="M420,244 C436,234 460,240 470,256"/>
+      </g>
+      <g class="p-browN" stroke="${CH.hair}" stroke-width="12" stroke-linecap="round" fill="none" opacity="0">
+        <path d="M330,256 C344,246 366,246 382,254"/><path d="M420,254 C436,246 456,246 470,256"/>
+      </g>
+      <path class="p-mouthC" d="M368,366 c12,-11 24,7 34,-2 c9,-8 20,2 28,10" stroke="${CH.hair}" stroke-width="11" fill="none" stroke-linecap="round"/>
+      <path class="p-mouthS" d="M362,356 c16,30 60,30 76,0" stroke="${CH.hair}" stroke-width="11" fill="none" stroke-linecap="round" opacity="0"/>
+    </g>
+
+    <g class="p-armR" style="transform-origin:528px 548px">
+      <path d="M530,552 C622,516 646,420 566,344" stroke="url(#${g1})" stroke-width="62" fill="none" stroke-linecap="round"/>
+      <ellipse cx="552" cy="330" rx="38" ry="42" fill="url(#${g2})" transform="rotate(16 552 330)"/>
+    </g>
+  </svg>`;
+}
+/* grab the animatable parts out of a container that holds personSVG() */
+function personParts(root) {
+  const q = s => root.querySelector(s);
+  return { head: q('.p-head'), armR: q('.p-armR'), armL: q('.p-armL'), body: q('.p-body'), eyeL: q('.p-eyeL'), eyeR: q('.p-eyeR'), browC: q('.p-browC'), browN: q('.p-browN'), mouthC: q('.p-mouthC'), mouthS: q('.p-mouthS') };
+}
+/* t = absolute time (for idle motion), calm = 0..1 mood blend */
+function personPose(p, t, calm = 0, o = {}) {
+  const breathe = Math.sin(t * 1.5) * 0.9;
+  const tilt = lerp(-7, 0, calm) + Math.sin(t * 0.9) * 1.6;
+  tf(p.head, `rotate(${tilt.toFixed(2)}deg) translateY(${breathe.toFixed(2)}px)`);
+  tf(p.body, `translateY(${(breathe * 0.6).toFixed(2)}px)`);
+  // scratching: small fast oscillation while confused, arm drops when calm
+  const scratch = (1 - calm) * Math.sin(t * 9) * 3.2;
+  tf(p.armR, `rotate(${(lerp(scratch, 64, E.io3(calm))).toFixed(2)}deg) translateY(${breathe.toFixed(2)}px)`);
+  tf(p.armL, `rotate(${(lerp(0, -10, calm) + Math.sin(t * 1.3) * 1.2).toFixed(2)}deg) translateY(${breathe.toFixed(2)}px)`);
+  op(p.browC, 1 - calm); op(p.browN, calm);
+  op(p.mouthC, 1 - calm); op(p.mouthS, calm);
+  // blink every ~2.6 s
+  const bl = (t % 2.6) / 2.6;
+  const k = bl > 0.95 ? Math.abs(Math.sin((bl - 0.95) / 0.05 * Math.PI)) : 0;
+  const sy = (1 - k * 0.92).toFixed(3);
+  tf(p.eyeL, `scaleY(${sy})`); tf(p.eyeR, `scaleY(${sy})`);
+}
+/* floating "?" field around the character */
+function quesField(n, seed, spread = 1) {
+  const r = mulberry(seed); let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = (r() - 0.5) * 900 * spread, y = (r() - 0.5) * 620 * spread;
+    const sz = 50 + r() * 110;
+    s += `<div class="qm" data-i="${i}" style="position:absolute;left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;font-family:Montserrat;font-weight:700;font-size:${sz.toFixed(0)}px;color:rgba(255,255,255,.14);text-shadow:0 0 30px rgba(53,168,255,.3)">?</div>`;
+  }
+  return s;
+}
+function quesAnim(els, lt, t0, step = 0.1) {
+  els.forEach((q, i) => {
+    const a = t0 + i * step;
+    const p = E.back(prog(lt, a, a + 0.5));
+    const fl = Math.sin(lt * 1.2 + i * 1.7);
+    tf(q, `translate(${(fl * 14).toFixed(1)}px,${(-lt * 9 + Math.cos(lt + i) * 12).toFixed(1)}px) scale(${p.toFixed(3)}) rotate(${(fl * 9).toFixed(1)}deg)`);
+    op(q, prog(lt, a, a + 0.2));
+  });
+}

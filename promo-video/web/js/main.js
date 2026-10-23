@@ -2,7 +2,7 @@
    Timeline engine — everything is a pure function of time t.
    window.KELANA.seek(t) renders the exact frame for time t.
    ========================================================= */
-const DURATION = 56.0;
+const DURATION = 60.0;
 const FPS = 60;
 
 /* ---------- background canvas ---------- */
@@ -11,8 +11,8 @@ const bctx = bg.getContext('2d');
 const PARTS = (() => { const r = mulberry(7); return Array.from({ length: 140 }, () => ({ x: r() * 1920, y: r() * 1080, z: 0.2 + r() * 0.8, s: r() })); })();
 /* mood: 0 = kelana blue, 1 = alarm red, 2 = dark/quiet */
 function moodAt(t) {
-  const red = Math.min(seg(t, 3.5, 8.5, 0, 1, E.io3), 1 - seg(t, 10.2, 10.8, 0, 1));
-  const dark = Math.max(seg(t, 10.0, 10.8, 0, 1) * (1 - seg(t, 11.6, 12.05, 0, 1)), seg(t, 55.2, 56, 0, 1));
+  const red = Math.min(seg(t, 4.6, 9.2, 0, 1, E.io3), 1 - seg(t, T.s5, T.s5 + 0.9, 0, 1));
+  const dark = Math.max(seg(t, 13.9, 14.6, 0, 1) * (1 - seg(t, T.s5 + 0.2, T.s5 + 1.0, 0, 1)), seg(t, 59.0, 60.0, 0, 1));
   return { red, dark };
 }
 function drawBG(t) {
@@ -66,30 +66,30 @@ function drawBG(t) {
 })();
 
 /* ---------- scene transitions ---------- */
-function transition(root, lt, dur, tin = 'fade', tout = 'fade', din = 0.25, dout = 0.25) {
+function transition(root, lt, dur, tin = 'fade', tout = 'fade', din = 0.45, dout = 0.45) {
   let tx = 0, ty = 0, s = 1, o = 1, f = '', rz = 0;
   const pi = prog(lt, 0, din), po = prog(lt, dur - dout, dur);
   if (pi < 1) {
-    const e = E.o4(pi);
+    const e = E.o3(pi);
     switch (tin) {
-      case 'fade': o = e; break;
-      case 'zoomIn': s = lerp(0.82, 1, e); o = E.o2(pi); break;
-      case 'zoomOut': s = lerp(1.35, 1, e); o = E.o2(pi); break;
-      case 'whipL': tx = lerp(1920, 0, E.o5(pi)); if (pi < 0.75) f = 'url(#mblurX)'; break;
-      case 'whipR': tx = lerp(-1920, 0, E.o5(pi)); if (pi < 0.75) f = 'url(#mblurX)'; break;
-      case 'whipU': ty = lerp(1080, 0, E.o5(pi)); if (pi < 0.75) f = 'url(#mblurY)'; break;
+      case 'fade': o = E.o2(pi); break;
+      case 'zoomIn': s = lerp(0.9, 1, e); o = E.o2(pi); break;
+      case 'zoomOut': s = lerp(1.14, 1, e); o = E.o2(pi); break;
+      case 'whipL': tx = lerp(1920, 0, E.io5(pi)); if (pi < 0.6) f = 'url(#mblurX)'; break;
+      case 'whipR': tx = lerp(-1920, 0, E.io5(pi)); if (pi < 0.6) f = 'url(#mblurX)'; break;
+      case 'whipU': ty = lerp(1080, 0, E.io5(pi)); if (pi < 0.6) f = 'url(#mblurY)'; break;
       case 'cut': break;
     }
   }
   if (po > 0) {
-    const e = E.i4(po);
+    const e = E.io3(po);
     switch (tout) {
-      case 'fade': o *= 1 - e; break;
-      case 'zoomThrough': s *= lerp(1, 2.6, E.i3(po)); o *= 1 - E.i3(po); break;
-      case 'zoomAway': s *= lerp(1, 0.7, e); o *= 1 - e; break;
-      case 'whipL': tx += lerp(0, -1920, E.i4(po)); if (po > 0.25) f = 'url(#mblurX)'; break;
-      case 'whipR': tx += lerp(0, 1920, E.i4(po)); if (po > 0.25) f = 'url(#mblurX)'; break;
-      case 'whipU': ty += lerp(0, -1080, E.i4(po)); if (po > 0.25) f = 'url(#mblurY)'; break;
+      case 'fade': o *= 1 - E.i3(po); break;
+      case 'zoomThrough': s *= lerp(1, 1.5, e); o *= 1 - E.i3(po); break;
+      case 'zoomAway': s *= lerp(1, 0.86, e); o *= 1 - E.i3(po); break;
+      case 'whipL': tx += lerp(0, -1920, E.io5(po)); if (po > 0.4) f = 'url(#mblurX)'; break;
+      case 'whipR': tx += lerp(0, 1920, E.io5(po)); if (po > 0.4) f = 'url(#mblurX)'; break;
+      case 'whipU': ty += lerp(0, -1080, E.io5(po)); if (po > 0.4) f = 'url(#mblurY)'; break;
       case 'cut': break;
     }
   }
@@ -114,9 +114,9 @@ function drawCaption(t) {
     capNum.textContent = num || '';
     capText.innerHTML = text;
   }
-  const pin = E.o4(prog(t, t0, t0 + 0.22)), pout = E.i3(prog(t, t1 - 0.16, t1));
+  const pin = E.o4(prog(t, t0, t0 + 0.4)), pout = E.i3(prog(t, t1 - 0.3, t1));
   capEl.style.opacity = (pin * (1 - pout)).toFixed(3);
-  capEl.style.transform = `translateY(${((1 - pin) * 40 + pout * 20).toFixed(1)}px) scale(${lerp(0.94, 1, pin).toFixed(3)})`;
+  capEl.style.transform = `translateY(${((1 - pin) * 28 + pout * 16).toFixed(1)}px) scale(${lerp(0.97, 1, pin).toFixed(3)})`;
 }
 
 /* ---------- build ---------- */

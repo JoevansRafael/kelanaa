@@ -5,7 +5,7 @@
 
 /* ---------- S17  Feature 02 title  34.0 – 36.1 ---------- */
 addScene({
-  id: 's17', start: 34.0, end: 36.1,
+  id: 's17', start: T.s17, end: T.s17e,
   build(root) {
     let ticks = '';
     for (let i = 0; i < 72; i++) { const a = i / 72 * Math.PI * 2, r1 = 440, r2 = i % 6 ? 455 : 475; ticks += `<line x1="${500 + Math.cos(a) * r1}" y1="${500 + Math.sin(a) * r1}" x2="${500 + Math.cos(a) * r2}" y2="${500 + Math.sin(a) * r2}" stroke="#35A8FF" stroke-opacity="${i % 6 ? .35 : .9}" stroke-width="2"/>`; }
@@ -27,7 +27,8 @@ addScene({
     return { t: splitText(q('#t'), 'Jalan bareng orang[br][b]yang tahu jalannya.[/b]', 'wd'), h: q('#h'), l: q('#l'), sub: q('#sub'), ct: q('#ct'), cn: q('#cn'), cmp: q('#cmp') };
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'zoomOut', 'whipL', 0.3, 0.2);
+    transition(root, lt, dur, 'zoomOut', 'whipL', 0.5, 0.45);
+    const _k = 2.1 / dur; lt *= _k; dur = 2.1;
     const H = 'Fitur 02 · Booking pemandu lokal';
     c.h.textContent = H.slice(0, Math.ceil(prog(lt, 0.15, 0.55) * H.length));
     tf(c.l, `scaleX(${E.o4(prog(lt, 0.1, 0.6)).toFixed(3)})`);
@@ -38,8 +39,8 @@ addScene({
     tf(c.cmp, `scale(${lerp(0.8, 1.05, E.o3(lt / dur)).toFixed(4)})`);
   },
 });
-FLASH.push([34.0, 0.6, 0.35]);
-SHAKE.push([34.0, 12, 0.3]);
+FLASH.push([T.s17, 0.6, 0.4]);
+SHAKE.push([T.s17, 12, 0.4]);
 
 /* ---------- guide data (from Kelana booking page) ---------- */
 const GUIDES = [
@@ -67,7 +68,7 @@ function guideCard(g, i, x, y) {
 
 /* ---------- S18  Guide search grid  36.0 – 40.1 ---------- */
 addScene({
-  id: 's18', start: 36.0, end: 40.1, z: 2,
+  id: 's18', start: T.s18, end: T.s18e, z: 2,
   build(root) {
     const cards = GUIDES.map((g, i) => guideCard(g, i, 130 + (i % 3) * 560, 330 + Math.floor(i / 3) * 330)).join('');
     root.innerHTML = `<div class="cam persp" style="perspective:2200px">
@@ -91,7 +92,8 @@ addScene({
     return ctx;
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'whipL', 'cut', 0.22, 0.1);
+    transition(root, lt, dur, 'whipL', 'fade', 0.45, 0.4);
+    const _k = 4.1 / dur; lt *= _k; dur = 4.1;
     const focus = E.io3(prog(lt, 3.75, 4.1));
     tf(c.g, `translate3d(${lerp(0, 560, focus).toFixed(1)}px,${lerp(0, 40, focus).toFixed(1)}px,${lerp(0, 300, focus).toFixed(0)}px) rotateY(${(lerp(5, -3, lt / dur) * (1 - focus)).toFixed(2)}deg) rotateX(${(3 * (1 - focus)).toFixed(2)}deg) scale(${lerp(0.92, 0.97, lt / dur).toFixed(4)})`);
     const pb = E.o4(prog(lt, 0.05, 0.4)); tf(c.bar, `translateY(${((1 - pb) * -60).toFixed(1)}px)`); op(c.bar, pb);
@@ -118,12 +120,12 @@ addScene({
     c.cursor.update(lt, [[0.45, 1400, 300], [0.78, 1690, 218], [1.4, 1500, 500], [2.9, 1100, 760], [3.6, 532, 593], [4.1, 532, 593]], [0.78, 3.6], [0.45, 4.15]);
   },
 });
-CAPS.push([36.4, 38.2, 0, 'Cari pemandu lokal di kota tujuanmu']);
-CAPS.push([38.2, 39.95, 0, 'Semua <span style="color:#4ADE80">terverifikasi</span> — identitas & sertifikasi']);
+CAPS.push([T.s18 + 0.5, T.s18 + 2.5, 0, 'Cari pemandu lokal di kota tujuanmu']);
+CAPS.push([T.s18 + 2.5, T.s18e - 0.25, 0, 'Semua <span style="color:#4ADE80">terverifikasi</span> — identitas & sertifikasi']);
 
 /* ---------- S19  Profile + booking  40.0 – 44.1 ---------- */
 addScene({
-  id: 's19', start: 40.0, end: 44.1, z: 2,
+  id: 's19', start: T.s19, end: T.s19e, z: 2,
   build(root) {
     const g = GUIDES[0];
     const days = [['Hari 1', '12 Nov'], ['Hari 2', '13 Nov'], ['Hari 3', '14 Nov'], ['Hari 4', '15 Nov']];
@@ -173,7 +175,8 @@ addScene({
     return ctx;
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'zoomOut', 'whipL', 0.3, 0.2);
+    transition(root, lt, dur, 'zoomOut', 'whipL', 0.5, 0.45);
+    const _k = 4.1 / dur; lt *= _k; dur = 4.1;
     tf(c.g, `rotateY(${(-4 + Math.sin(lt * 0.7) * 2).toFixed(2)}deg) rotateX(3deg) scale(${lerp(0.94, 0.98, lt / dur).toFixed(4)})`);
     const pp = E.o5(prog(lt, 0, 0.45)); tf(c.prof, `translateZ(${lerp(-300, 0, pp).toFixed(0)}px)`); op(c.prof, pp);
     const pb = E.o5(prog(lt, 0.2, 0.6)); tf(c.book, `translate3d(${((1 - pb) * 300).toFixed(1)}px,0,40px)`); op(c.book, pb);
@@ -207,63 +210,12 @@ addScene({
     c.cursor.update(lt, [[0.55, 1000, 600], [0.95, 1540, 382], [1.4, 1500, 560], [1.75, 1480, 645], [2.2, 1480, 645]], [0.95, 1.75], [0.5, 2.25]);
   },
 });
-CAPS.push([40.4, 42.6, 0, 'Pilih tanggal, booking — <span class="blue">cuma beberapa klik</span>']);
-CAPS.push([42.6, 43.95, 0, 'Pemandu langsung masuk ke itinerary-mu']);
-
-/* ---------- S20  Open trip patungan  44.0 – 46.1 ---------- */
-addScene({
-  id: 's20', start: 44.0, end: 46.1, z: 2,
-  build(root) {
-    const tiers = [['1 orang', 4.80], ['4 orang', 3.70], ['6 orang · penuh', 3.10]];
-    root.innerHTML = `<div class="cam persp" style="perspective:2200px">
-      <div class="abs" id="g" style="left:0;top:0;width:1920px;height:1080px;transform-style:preserve-3d;transform-origin:960px 520px">
-        <div class="abs eyebrow" style="left:260px;top:110px">Open trip patungan</div>
-        <div class="abs big" style="left:260px;top:138px;font-size:72px">Mau lebih <span class="orange">hemat?</span></div>
-        <div class="card" id="c" style="left:260px;top:280px;width:1400px;height:520px">
-          <div class="abs thumb" style="left:0;top:0;width:440px;height:520px;border-radius:0">${art('labuanbajo')}</div>
-          <div class="abs chip orange" style="left:24px;top:24px;background:#fff">${icon('users', 18, '#FF6B24')} Hampir penuh</div>
-          <div class="abs" style="left:480px;top:40px;width:470px">
-            <div class="sub" style="display:flex;gap:6px;align-items:center">${icon('pin', 18, '#64748B')} Labuan Bajo, NTT</div>
-            <div style="font-size:32px;font-weight:800;line-height:1.2;margin-top:10px">Sailing Komodo: Padar, Pink Beach & Manta Point</div>
-            <div style="display:flex;gap:10px;margin-top:16px"><span class="chip gray">${icon('cal', 16, '#475569')} 14–17 Des 2026</span><span class="chip gray">4H 3M</span></div>
-            <div class="sub" style="margin-top:20px;font-size:18px;line-height:1.5">Biaya kapal, pemandu, dan makan dibagi rata ke semua peserta. Makin banyak yang gabung, makin murah.</div>
-            <div style="margin-top:26px;font-size:17px;color:#64748B">Sudah gabung</div>
-            <div style="display:flex;margin-top:8px">${['AN', 'DW', 'RS', 'KM'].map((a, i) => `<div class="avatar s20a ${['ab-blue', 'ab-orange', 'ab-navy', 'ab-green'][i]}" style="width:58px;height:58px;border-radius:50%;font-size:19px;border:3px solid #fff;margin-right:-12px">${a}</div>`).join('')}</div>
-          </div>
-          <div class="abs" style="left:990px;top:40px;width:370px">
-            <div style="display:flex;justify-content:space-between;font-size:19px;font-weight:700"><span>Kuota peserta</span><span id="kq">1/6</span></div>
-            <div style="height:12px;border-radius:6px;background:#E2E8F0;margin-top:10px"><div id="kb" style="height:100%;width:16%;border-radius:6px;background:#35A8FF;box-shadow:0 0 12px #35A8FF"></div></div>
-            <div style="font-size:16px;color:#64748B;margin-top:20px;font-weight:700;letter-spacing:.08em">HARGA PER ORANG</div>
-            ${tiers.map(([a, v], i) => `<div class="s20t" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:14px;border:1.5px solid #E2E8F0;margin-top:10px;font-size:19px"><span>${a}</span><b>${fmtJt(v)}</b></div>`).join('')}
-            <div class="btn" style="width:100%;margin-top:20px">Gabung trip ini</div>
-          </div>
-        </div>
-        <div class="abs" id="pp" style="left:1400px;top:150px;padding:16px 26px;border-radius:22px;background:#16A34A;font-size:34px;font-weight:800;box-shadow:0 0 40px rgba(22,163,74,.8)">Hemat <span id="hm">Rp 0</span></div>
-      </div></div>`;
-    const q = s => root.querySelector(s);
-    return { g: q('#g'), c: q('#c'), av: [...root.querySelectorAll('.s20a')], kq: q('#kq'), kb: q('#kb'), tiers: [...root.querySelectorAll('.s20t')], pp: q('#pp'), hm: q('#hm') };
-  },
-  update(lt, c, dur, root) {
-    transition(root, lt, dur, 'whipL', 'whipL', 0.22, 0.2);
-    tf(c.g, `rotateY(${lerp(6, -4, lt / dur).toFixed(2)}deg) rotateX(3deg) scale(${lerp(0.95, 1.0, lt / dur).toFixed(4)})`);
-    const joins = [0.35, 0.6, 0.85, 1.1];
-    let n = 1;
-    c.av.forEach((a, i) => { const p = E.back(prog(lt, joins[i], joins[i] + 0.22)); tf(a, `scale(${p.toFixed(3)})`); op(a, prog(lt, joins[i], joins[i] + 0.05)); if (lt > joins[i]) n = i + 2; });
-    n = Math.min(n, 4) + (lt > 1.1 ? 0 : 0);
-    const cnt = lt > 1.1 ? 4 : n;
-    c.kq.textContent = cnt + '/6';
-    c.kb.style.width = (cnt / 6 * 100).toFixed(1) + '%';
-    const tier = cnt >= 4 ? 1 : 0;
-    c.tiers.forEach((t, i) => { const on = i === tier; t.style.borderColor = on ? '#35A8FF' : '#E2E8F0'; t.style.background = on ? '#EAF5FF' : '#fff'; t.style.boxShadow = on ? '0 0 24px rgba(53,168,255,.5)' : ''; });
-    const hp = E.back(prog(lt, 1.2, 1.45)); tf(c.pp, `scale(${hp.toFixed(3)}) rotate(-4deg)`); op(c.pp, prog(lt, 1.2, 1.25));
-    c.hm.textContent = fmtJt(1.1 * E.o3(prog(lt, 1.2, 1.7)));
-  },
-});
-CAPS.push([44.3, 45.95, 0, 'Gabung open trip — <span class="blue">biaya dibagi rata</span>']);
+CAPS.push([T.s19 + 0.5, T.s19 + 3.2, 0, 'Pilih tanggal, booking — <span class="blue">cuma beberapa klik</span>']);
+CAPS.push([T.s19 + 3.2, T.s19e - 0.3, 0, 'Pemandu langsung masuk ke itinerary-mu']);
 
 /* ---------- S21  Dashboard countdown  46.0 – 48.1 ---------- */
 addScene({
-  id: 's21', start: 46.0, end: 48.1, z: 2,
+  id: 's21', start: T.s21, end: T.s21e, z: 2,
   build(root) {
     const list = ['Tiket pesawat dibeli', 'DP kapal ditransfer', 'Pemandu dibooking', 'Asuransi perjalanan', 'Sewa alat snorkeling'];
     root.innerHTML = `<div class="cam persp" style="perspective:2200px">
@@ -294,7 +246,8 @@ addScene({
     return { g: q('#g'), ls: [...root.querySelectorAll('.s21l')], cs: [...root.querySelectorAll('.s21c')], pc: q('#pc'), pb: q('#pb'), cds: q('#cds'), cdm: q('#cdm') };
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'whipL', 'cut', 0.22, 0.1);
+    transition(root, lt, dur, 'whipL', 'fade', 0.45, 0.4);
+    const _k = 2.1 / dur; lt *= _k; dur = 2.1;
     tf(c.g, `rotateY(${lerp(-5, 3, lt / dur).toFixed(2)}deg) rotateX(3deg) scale(${lerp(0.95, 1.02, lt / dur).toFixed(4)})`);
     c.cds.textContent = String(42 - Math.floor(lt)).padStart(2, '0');
     let done = 0;
@@ -313,14 +266,14 @@ addScene({
     c.pb.style.width = (done / 5 * 100) + '%';
   },
 });
-CAPS.push([46.3, 47.95, 0, 'Semua rencana rapi di satu tempat']);
-FLASH.push([48.0, 0.8, 0.3]);
+CAPS.push([T.s21 + 0.4, T.s21e - 0.25, 0, 'Semua rencana rapi di satu tempat']);
+FLASH.push([T.s22, 0.8, 0.35]);
 
 /* ---------- S22  Destination montage  48.0 – 51.1 ---------- */
-const S22 = [['padar', 'Pulau Padar · NTT', '8.65°S 119.58°E'], ['bromo', 'Gunung Bromo · Jawa Timur', '7.94°S 112.95°E'], ['rajaampat', 'Raja Ampat · Papua Barat Daya', '0.23°S 130.52°E'], ['borobudur', 'Candi Borobudur · Jawa Tengah', '7.61°S 110.20°E'], ['balibeach', 'Nusa Penida · Bali', '8.73°S 115.45°E'], ['terraces', 'Sawah Tegallalang · Bali', '8.43°S 115.28°E'], ['toba', 'Rumah Adat Batak · Samosir', '2.68°N 98.87°E'], ['jogja', 'Tugu Jogja · Yogyakarta', '7.78°S 110.37°E']];
-const S22_CUT = 3.0 / S22.length;
+const S22 = [['padar', 'Pulau Padar · NTT', '8.65°S 119.58°E'], ['bromo', 'Gunung Bromo · Jawa Timur', '7.94°S 112.95°E'], ['rajaampat', 'Raja Ampat · Papua Barat Daya', '0.23°S 130.52°E'], ['terraces', 'Sawah Tegallalang · Bali', '8.43°S 115.28°E']];
+const S22_CUT = 2.4 / S22.length;
 addScene({
-  id: 's22', start: 48.0, end: 51.1, z: 2,
+  id: 's22', start: T.s22, end: T.s22e, z: 2,
   build(root) {
     root.innerHTML = `<div class="cam">
       ${S22.map(([a], i) => `<div class="abs s22s" style="inset:0;overflow:hidden"><div class="fill s22i">${art(a)}</div></div>`).join('')}
@@ -335,7 +288,7 @@ addScene({
   },
   update(lt, c, dur, root) {
     transition(root, lt, dur, 'cut', 'cut');
-    const idx = Math.min(S22.length - 1, Math.floor(lt / S22_CUT));
+        const idx = Math.min(S22.length - 1, Math.floor(lt / S22_CUT));
     c.s.forEach((s, i) => {
       const on = i === idx; s.style.display = on ? 'block' : 'none';
       if (!on) return;
@@ -345,7 +298,7 @@ addScene({
     });
     if (c.loc.dataset.i != idx) { c.loc.dataset.i = idx; c.loc.textContent = S22[idx][1]; c.co.textContent = S22[idx][2]; c.dn.textContent = '0' + (idx + 1); }
     c.w.forEach((w, i) => {
-      const t0 = i * 1.0, on = lt >= t0 && lt < t0 + 1.0;
+      const t0 = i * 0.8, on = lt >= t0 && lt < t0 + 0.8;
       w.style.display = on ? 'block' : 'none';
       if (!on) return;
       const d = lt - t0;
@@ -354,12 +307,12 @@ addScene({
     });
   },
 });
-for (let i = 1; i < S22.length; i++) FLASH.push([48.0 + i * S22_CUT, 0.22, 0.1]);
-SHAKE.push([49.0, 10, 0.2], [50.0, 10, 0.2]);
+for (let i = 1; i < S22.length; i++) FLASH.push([T.s22 + i * S22_CUT, 0.2, 0.12]);
+SHAKE.push([T.s22 + 0.8, 9, 0.25], [T.s22 + 1.6, 9, 0.25]);
 
 /* ---------- S23  End card  51.0 – 56.0 ---------- */
 addScene({
-  id: 's23', start: 51.0, end: 56.0, z: 3,
+  id: 's23', start: T.s23, end: T.s23e, z: 3,
   build(root) {
     const feat = [['route', 'Itinerary sesuai keinginan'], ['shield', 'Pemandu lokal terverifikasi'], ['wallet', 'Pas dengan budget']];
     root.innerHTML = `<div class="cam persp">
@@ -380,6 +333,7 @@ addScene({
   },
   update(lt, c, dur, root) {
     transition(root, lt, dur, 'cut', 'cut');
+    const _k = 5.0 / dur; lt *= _k; dur = 5.0;
     const ps = E.o5(prog(lt, 0, 0.7));
     tf(c.logo, `scale(${lerp(1.4, 1, ps).toFixed(4)})`);
     { const wp = E.o4(prog(lt, 0, 0.55)); c.logo.style.clipPath = wp >= 1 ? 'none' : `inset(-80px ${((1 - wp) * 100).toFixed(2)}% -80px -80px)`; }
@@ -394,5 +348,5 @@ addScene({
     op(c.black, E.io3(prog(lt, 4.35, 5.0)));
   },
 });
-FLASH.push([51.0, 1, 0.5]);
-SHAKE.push([51.0, 14, 0.4]);
+FLASH.push([T.s23, 1, 0.55]);
+SHAKE.push([T.s23, 14, 0.45]);

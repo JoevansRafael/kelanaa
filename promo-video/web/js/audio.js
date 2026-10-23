@@ -15,7 +15,7 @@ window.renderAudio = async function () {
   const master = ctx.createGain(); master.gain.value = 0.9;
   comp.connect(limiter); limiter.connect(master); master.connect(ctx.destination);
   // master fade out
-  master.gain.setValueAtTime(0.9, 54.6); master.gain.linearRampToValueAtTime(0.0, 56.0);
+  master.gain.setValueAtTime(0.9, 58.4); master.gain.linearRampToValueAtTime(0.0, 60.0);
 
   const mkIR = (sec, decay) => {
     const b = ctx.createBuffer(2, SR * sec, SR);
@@ -197,33 +197,29 @@ window.renderAudio = async function () {
     }));
   }
 
-  /* ---- ACT 1: tension (0 – 10.0) ---- */
-  // drone D
+  /* ---- ACT 1: slow tension build (0 – 14.4) ---- */
   [38, 50].forEach((n, i) => {
     const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = midi(n); o.detune.value = i ? 6 : -4;
-    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(220, 0); lp.frequency.linearRampToValueAtTime(900, 9.9);
-    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, 0); g.gain.linearRampToValueAtTime(0.09, 1.0); g.gain.linearRampToValueAtTime(0.13, 9.8); g.gain.linearRampToValueAtTime(0.0001, 10.02);
-    o.connect(lp); lp.connect(g); out(g, music, i ? 0.3 : -0.3, 0.2); o.start(0); o.stop(10.1);
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(200, 0); lp.frequency.linearRampToValueAtTime(950, 14.2);
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, 0); g.gain.linearRampToValueAtTime(0.08, 1.6); g.gain.linearRampToValueAtTime(0.13, 14.0); g.gain.linearRampToValueAtTime(0.0001, 14.5);
+    o.connect(lp); lp.connect(g); out(g, music, i ? 0.3 : -0.3, 0.2); o.start(0); o.stop(14.6);
   });
-  // dissonant tension pad (D + Eb + A)
-  pad(5.5, [62, 63, 69], 4.5, 0.03, 1400, music);
-  // ticking clock + heartbeat kicks
-  for (let t = 0.5; t < 10; t += 0.25) hat(t, 0.03 + 0.05 * (t / 10), false, (Math.floor(t * 4) % 2 ? 0.3 : -0.3));
-  for (let t = 3.0; t < 8.5; t += BEAT) { kick(t, 0.45, false); if (t > 5.4) kick(t + 0.18, 0.28, false); }
-  for (let t = 7.5; t < 8.5; t += 0.125) snare(t, 0.06 + (t - 7.5) * 0.12);
-  // pulse bass 8ths in D
-  for (let t = 3.0; t < 8.5; t += 0.25) bassNote(t, midi(38), 0.2, 0.12);
+  pad(T.s3, [62, 63, 69], 4.6, 0.028, 1400, music);
+  for (let t = 1.0; t < 14.4; t += 0.25) hat(t, 0.025 + 0.05 * (t / 14.4), false, (Math.floor(t * 4) % 2 ? 0.3 : -0.3));
+  for (let t = T.s2; t < 14.3; t += BEAT) { kick(t, 0.42, false); if (t > 10.5) kick(t + 0.2, 0.26, false); }
+  for (let t = T.s3; t < 14.3; t += 0.25) bassNote(t, midi(38), 0.2, 0.11);
+  for (let t = 13.0; t < 14.4; t += 0.14) snare(t, 0.05 + (t - 13.0) * 0.1);
 
-  /* ---- 10.8 – 14.5: calm → logo ---- */
-  pad(10.8, [53, 57, 60, 64, 67], 3.9, 0.035, 1600, music);
-  pad(12.0, [41, 53, 57, 60, 65], 2.6, 0.04, 2400, music);
-  for (let i = 0; i < 20; i++) { const t = 12.0 + i * 0.125; const notes = [65, 69, 72, 76, 77, 76, 72, 69]; pluck(t, midi(notes[i % 8]), 0.05 + i * 0.002, (i % 2 ? 0.4 : -0.4), 2400); }
-  bassNote(12.0, midi(29), 2.4, 0.3);
+  /* ---- calm -> logo (14.4 – 19.6) ---- */
+  pad(T.s5, [53, 57, 60, 64, 67], 2.6, 0.035, 1600, music);
+  pad(T.s6, [41, 53, 57, 60, 65], 3.4, 0.042, 2400, music);
+  bassNote(T.s6, midi(29), 3.0, 0.3);
+  for (let i = 0; i < 24; i++) { const notes = [65, 69, 72, 76, 77, 76, 72, 69]; pluck(T.s6 + i * 0.125, midi(notes[i % 8]), 0.05 + i * 0.002, (i % 2 ? 0.4 : -0.4), 2400); }
 
-  /* ---- 14.5 – 51: main groove (F – C – Dm – Bb) ---- */
+  /* ---- ACT 2-3: main groove, F – C – Dm – Bb (19.2 – 56.0) ---- */
   const PROG = [[41, [65, 69, 72]], [36, [64, 67, 72]], [38, [62, 65, 69]], [34, [62, 65, 70]]];
-  const G0 = 14.5, G1 = 51.0;
-  const breaks = [[24.0, 25.9], [33.5, 34.0], [47.0, 48.0]];
+  const G0 = T.s11, G1 = T.s23;
+  const breaks = [[T.s14, T.s14e - 0.2], [T.s17 - 0.2, T.s17 + 0.3], [T.s22 - 1.0, T.s22]];
   const inBreak = t => breaks.some(([a, b]) => t >= a && t < b);
   for (let bar = 0; G0 + bar * 2 < G1; bar++) {
     const t0 = G0 + bar * 2, [root, chord] = PROG[bar % 4];
@@ -232,146 +228,147 @@ window.renderAudio = async function () {
       const t = t0 + b * BEAT;
       if (t >= G1) break;
       const br = inBreak(t);
-      if (!br) kick(t, 0.8);
-      if (!br && (b === 1 || b === 3)) clap(t, 0.28);
-      if (!br) hat(t + 0.25, 0.08, b === 3, 0.25);
-      for (let s = 0; s < 4; s++) if (!br || t >= 24.0 && t < 25.9) hat(t + s * 0.125, 0.025, false, -0.3);
-      // bass offbeat 8ths
-      if (!br || (t >= 24 && t < 25.9)) { bassNote(t + 0.25, midi(root), 0.22, 0.26); if (b % 2) bassNote(t, midi(root + 12), 0.2, 0.12); }
-      // arp 16ths
-      for (let s = 0; s < 4; s++) {
-        const tt = t + s * 0.125, idx = (b * 4 + s);
+      if (!br) { kick(t, 0.78); if (b === 1 || b === 3) clap(t, 0.27); hat(t + 0.25, 0.075, b === 3, 0.25); }
+      for (let sx = 0; sx < 4; sx++) if (!br) hat(t + sx * 0.125, 0.024, false, -0.3);
+      if (!br) { bassNote(t + 0.25, midi(root), 0.22, 0.25); if (b % 2) bassNote(t, midi(root + 12), 0.2, 0.11); }
+      for (let sx = 0; sx < 4; sx++) {
+        const tt = t + sx * 0.125;
+        if (inBreak(tt)) continue;
         const pat = [0, 1, 2, 3, 2, 1, 0, 2, 1, 3, 2, 1, 0, 1, 2, 3];
-        const k = pat[idx % 16], n = k === 3 ? chord[0] + 12 : chord[k];
-        const brightness = 1600 + 2600 * clamp((tt - 14.5) / 20);
-        if (tt >= 47 && tt < 48) continue;
-        pluck(tt, midi(n), 0.055, (s % 2 ? 0.45 : -0.45), brightness);
+        const k = pat[(b * 4 + sx) % 16], n = k === 3 ? chord[0] + 12 : chord[k];
+        pluck(tt, midi(n), 0.05, (sx % 2 ? 0.45 : -0.45), 1600 + 2400 * clamp((tt - G0) / 22));
       }
     }
   }
-  // processing section: filtered build
-  riser(24.2, 25.9, 0.28, 300, 6000);
-  // pre-drop build before montage
-  for (let t = 47.0; t < 48.0; t += (t < 47.5 ? 0.125 : 0.0625)) snare(t, 0.08 + (t - 47) * 0.22);
-  riser(46.9, 48.0, 0.32);
-  // outro chord
-  pad(51.0, [41, 53, 57, 60, 64, 65], 5.0, 0.045, 2200, music);
-  bassNote(51.0, midi(29), 3.0, 0.3);
-  [65, 69, 72, 76, 79, 81, 84].forEach((n, i) => bell(51.25 + i * 0.12, midi(n), 0.07, 2.4, (i - 3) * 0.2, 0.6));
+  riser(T.s14 + 0.3, T.s14e - 0.2, 0.26, 300, 6000);
+  for (let t = T.s22 - 1.0; t < T.s22; t += (t < T.s22 - 0.5 ? 0.125 : 0.0625)) snare(t, 0.08 + (t - (T.s22 - 1.0)) * 0.2);
+  riser(T.s22 - 1.1, T.s22, 0.3);
+  pad(T.s23, [41, 53, 57, 60, 64, 65], 4.0, 0.045, 2200, music);
+  bassNote(T.s23, midi(29), 3.0, 0.3);
+  [65, 69, 72, 76, 79, 81, 84].forEach((n, i) => bell(T.s23 + 0.25 + i * 0.12, midi(n), 0.07, 2.4, (i - 3) * 0.2, 0.6));
 
-  /* =================== SFX cues (synced to the picture) =================== */
-  // S1
-  riser(0.0, 0.4, 0.18, 800, 9000); whoosh(0.25, 0.4, 0.25);
-  // S2
-  whoosh(1.32, 0.32, 0.5, 300, 6000);
-  for (let i = 0; i < 6; i++) pop(1.5 + 0.35 + i * 0.14, 520 + i * 90, 0.3, -0.6 + i * 0.24);
-  // S3
-  whoosh(2.86, 0.3, 0.55, 200, 5000, 0.8, -0.8);
-  for (let k = 0; k < 34; k++) key(3.0 + 0.12 + k / 44);
-  click(3.92, 0.25); blip(3.56, 1800, 0.08);
-  for (let i = 0; i < 12; i++) { const t = 3.0 + 1.0 + Math.pow(i / 12, 0.8) * 1.1; whoosh(t - 0.05, 0.22, 0.18, 500, 4000, (i % 2 ? 0.6 : -0.6), 0); pop(t + 0.05, 900 + i * 40, 0.12, (i % 2 ? 0.4 : -0.4)); }
-  { let last = 1; for (let f = 0; f < 2.6 * 60; f++) { const lt = f / 60; const cnt = Math.max(1, Math.round(E.i3(prog(lt, 1.0, 2.3)) * 39) + 1); if (cnt !== last) { blip(3.0 + lt, 2200 + cnt * 20, 0.07, 0.03, 'square'); last = cnt; } } }
-  glitch(5.46, 5.58, 0.25);
-  // S4
-  impact(5.5, 0.4, 200, 60, 0.4);
-  [5.88, 6.08, 6.3].forEach(t => buzz(t, 0.1, 0.12, 180));
-  // S5
-  S5_N.forEach((n, i) => { const t = 6.5 + 0.04 + i * 0.1; if (n[1] === '#DC2626') buzz(t, 0.08, 0.1, 160); ping(t, n[1] === '#35A8FF' ? 1568 : 1175, 0.12, (n[5] - 960) / 1100); });
-  // S6
-  whoosh(7.38, 0.25, 0.4); riser(7.6, 8.25, 0.2, 300, 4000);
-  buzz(8.25, 0.14, 0.12, 220); buzz(8.4, 0.14, 0.12, 220);
-  // S7 slams
-  [8.5, 9.0, 9.5].forEach((t, i) => { impact(t, 1.0, 170, 34, 0.7); crash(t, 0.12, 0.6); });
-  // S8
-  glitch(10.0, 10.14, 0.3); glitch(10.3, 10.38, 0.3); powerDown(10.5, 0.3);
-  // S9
-  bell(10.9, midi(77), 0.1, 2.5, 0, 0.8); bell(10.95, midi(72), 0.07, 2.5, -0.3, 0.8);
-  revSwell(11.0, 12.0, 0.32);
-  // S10 logo
-  bigImpact(12.0, 1.0); shimmer(12.5, 1.0, 0.05, 88); whoosh(12.42, 0.45, 0.25, 600, 8000);
-  // S11
-  whoosh(14.3, 0.3, 0.5, 200, 7000); impact(14.5, 0.55, 150, 45, 0.6);
-  for (let k = 0; k < 20; k++) key(15.2 + k * 0.025, 0.06);
-  whoosh(16.25, 0.25, 0.55, 300, 6000, 0.8, -0.8);
-  // S12
-  whoosh(16.38, 0.4, 0.35, 150, 3000);
-  for (let k = 0; k < 16; k++) key(16.9 + k / 30);
-  for (let k = 0; k < 13; k++) key(17.52 + k / 40);
-  pop(17.9, 900, 0.2); pop(18.02, 1000, 0.2); pop(18.15, 1300, 0.15);
-  click(18.75); chime(18.77, [77, 81], 0.1);
-  click(19.3, 0.2);
-  for (let i = 0; i < 12; i++) tick(19.35 + i * 0.042, 0.06, 5000 + i * 200);
-  click(20.25); whoosh(20.36, 0.26, 0.55, 300, 6000, 0.8, -0.8);
-  // S13
-  [[21.05, 72], [21.4, 76], [21.75, 79]].forEach(([t, n]) => { click(t); chime(t + 0.02, [n, n + 7], 0.1); });
-  click(22.55); chime(22.57, [84], 0.1);
-  click(23.35, 0.35); riser(23.35, 24.0, 0.3, 300, 8000); whoosh(23.5, 0.5, 0.4, 100, 3000);
-  // S14
-  impact(24.0, 0.5, 120, 40, 0.6);
-  for (let i = 0; i < 6; i++) { const t0 = 24.2 + i * 0.25; for (let k = 0; k < 8; k++) blip(t0 + k * 0.03, 2000 + R() * 2000, 0.03, 0.015, 'square', (R() - 0.5)); blip(t0 + 0.42, midi(84 + (i % 3) * 2), 0.07, 0.12); }
-  for (let i = 0; i < 6; i++) whoosh(24.3 + i * 0.08, 0.2, 0.08, 800, 5000);
-  chime(25.8, [72, 76, 79, 84], 0.14, 0.05);
-  whoosh(25.85, 0.28, 0.45, 300, 8000);
-  // S15
-  whoosh(25.98, 0.32, 0.4, 200, 4000, 0, 0);
-  for (let i = 0; i < 4; i++) whoosh(26.62 + i * 0.12, 0.25, 0.14, 600, 5000, 0.8, 0);
-  for (let i = 0; i < 18; i++) tick(26.8 + i * 0.055, 0.06, 6000);
-  chime(27.85, [79, 84], 0.12);
-  click(28.45, 0.3); whoosh(28.55, 0.45, 0.12, 300, 1500, -0.2, 0.2); impact(29.05, 0.25, 220, 80, 0.15); click(29.05, 0.2, 1200);
-  blip(29.08, 1760, 0.08); blip(29.15, 2093, 0.08);
-  ping(29.55, 988, 0.13); buzz(29.55, 0.04, 0.08, 330);
-  click(30.3, 0.3); chime(30.33, [72, 76, 79], 0.12, 0.05);
-  whoosh(30.45, 0.3, 0.2, 400, 5000, 0, 0.9); pop(30.6, 1400, 0.15);
-  whoosh(30.84, 0.28, 0.5, 200, 7000);
-  // S16
-  whoosh(31.0, 0.35, 0.35, 150, 3000);
-  riser(31.25, 32.9, 0.08, 400, 3000);
-  [31.25, 31.62, 31.92, 32.3, 32.85].forEach((t, i) => pop(t, 600 + i * 120, 0.22, -0.6 + i * 0.3));
-  [32.5, 33.0, 33.5].forEach(t => impact(t, 0.55, 180, 50, 0.4));
-  whoosh(33.82, 0.3, 0.5, 300, 7000, 0.8, -0.8);
-  // S17
-  bigImpact(34.0, 0.75);
-  for (let k = 0; k < 30; k++) key(34.15 + k * 0.014, 0.05);
-  whoosh(34.25, 0.45, 0.25, 200, 5000);
-  whoosh(35.85, 0.26, 0.55, 300, 6000, 0.8, -0.8);
-  // S18
-  whoosh(35.98, 0.3, 0.3);
-  for (let k = 0; k < 16; k++) key(36.3 + k / 40);
-  click(36.78, 0.3);
-  for (let i = 0; i < 6; i++) { whoosh(36.88 + i * 0.09, 0.18, 0.12, 700, 6000, -0.6 + i * 0.24, 0); pop(36.95 + i * 0.09, 700 + i * 60, 0.1); }
-  chime(37.7, [76, 79, 84], 0.11, 0.05);
-  for (let i = 0; i < 6; i++) blip(37.75 + i * 0.08, 2637, 0.04, 0.04);
-  click(39.6, 0.3); whoosh(39.72, 0.4, 0.35, 150, 3000);
-  // S19
-  whoosh(39.98, 0.35, 0.3, 200, 4000);
-  click(40.95); chime(40.97, [79], 0.1);
-  click(41.75, 0.35);
-  for (let i = 0; i < 8; i++) tick(41.8 + i * 0.06, 0.05, 6000);
-  chime(42.3, [72, 76, 79, 84, 88], 0.17, 0.06); impact(42.3, 0.35, 200, 60, 0.4); shimmer(42.35, 0.8, 0.035, 88);
-  whoosh(42.72, 0.35, 0.22, 200, 3000);
-  whoosh(43.02, 0.45, 0.3, 400, 7000, 0.7, -0.4); pop(43.5, 1200, 0.25); bell(43.52, midi(88), 0.1, 0.8);
-  whoosh(43.86, 0.26, 0.55, 300, 6000, 0.8, -0.8);
-  // S20
-  whoosh(43.98, 0.3, 0.3);
-  [44.35, 44.6, 44.85, 45.1].forEach((t, i) => pop(t, 700 + i * 140, 0.25, -0.4 + i * 0.25));
-  pop(45.2, 1200, 0.25); chime(45.22, [84, 88, 91], 0.1, 0.04);
-  whoosh(45.86, 0.26, 0.55, 300, 6000, 0.8, -0.8);
-  // S21
-  whoosh(45.98, 0.3, 0.3);
-  for (let i = 0; i < 5; i++) { click(46.45 + i * 0.22, 0.18, 1800); blip(46.46 + i * 0.22, midi(79 + i * 2), 0.07, 0.1); }
-  // S22 montage
-  bigImpact(48.0, 0.9);
-  for (let i = 1; i < 8; i++) { whoosh(48.0 + i * 0.375 - 0.1, 0.14, 0.22, 500, 7000, (i % 2 ? -0.7 : 0.7), 0); }
-  impact(49.0, 0.8, 170, 40, 0.6); impact(50.0, 0.8, 170, 40, 0.6); crash(49.0, 0.12, 0.8); crash(50.0, 0.12, 0.8);
-  riser(50.4, 51.0, 0.3, 400, 9000);
-  // S23 end card
-  bigImpact(51.0, 1.0); shimmer(51.1, 1.4, 0.05, 88);
-  for (let i = 0; i < 4; i++) whoosh(51.6 + i * 0.07, 0.3, 0.1, 400, 4000);
-  [52.2, 52.32, 52.44].forEach((t, i) => pop(t, 800 + i * 160, 0.2, -0.4 + i * 0.4));
-  [52.8, 52.92].forEach((t, i) => { pop(t, 600 + i * 200, 0.25); });
-  bell(53.4, midi(84), 0.06, 2.5, 0, 0.9);
-  // caption entrances: soft UI tick
-  CAPS.forEach(c => blip(c[0], 2793, 0.035, 0.05, 'sine', 0));
+  /* =================== SFX, locked to the picture =================== */
+  // S1 — traveller appears, question marks float up
+  riser(T.s1, T.s1 + 0.6, 0.16, 800, 9000);
+  whoosh(T.s1 + 0.3, 0.6, 0.22, 250, 5000);
+  for (let i = 0; i < 9; i++) pop(T.s1 + 1.9 + i * 0.13, 460 + i * 70, 0.17, -0.6 + i * 0.15);
+  bell(T.s1 + 1.2, midi(72), 0.07, 1.6, 0, 0.6);
+  // S2 — map sweep + pins
+  whoosh(T.s2, 0.7, 0.4, 200, 4000);
+  for (let i = 0; i < 6; i++) { pop(T.s2 + 1.0 + i * 0.3, 520 + i * 80, 0.26, -0.6 + i * 0.24); blip(T.s2 + 1.05 + i * 0.3, 1600 + i * 120, 0.05, 0.06); }
+  // S3 — research chaos piling up
+  whoosh(T.s3, 0.6, 0.35, 200, 4500);
+  for (let i = 0; i < 8; i++) { whoosh(T.s3 + 0.4 + i * 0.28, 0.3, 0.16, 500, 4200, (i % 2 ? 0.6 : -0.6), 0); pop(T.s3 + 0.52 + i * 0.28, 820 + i * 45, 0.12, (i % 2 ? 0.4 : -0.4)); }
+  for (let i = 0; i < 26; i++) blip(T.s3 + 0.6 + i * 0.1, 2100 + i * 22, 0.045, 0.03, 'square');
+  S3_NOTIF.forEach((n, i) => { const t = T.s3 + 2.1 + i * 0.5; ping(t, n[1] === '#35A8FF' ? 1568 : 1175, 0.13, (n[5] - 960) / 1100); if (n[1] === '#DC2626') buzz(t, 0.09, 0.11, 165); });
+  // S4 — budget blows past the limit, then deflates
+  whoosh(T.s4, 0.4, 0.35);
+  riser(T.s4 + 0.2, T.s4 + 1.5, 0.22, 300, 4000);
+  buzz(T.s4 + 1.5, 0.14, 0.13, 220); buzz(T.s4 + 1.66, 0.14, 0.13, 220);
+  impact(T.s4 + 1.8, 0.95, 170, 34, 0.9); crash(T.s4 + 1.8, 0.14, 0.9);
+  glitch(T.s4 + 1.78, T.s4 + 1.9, 0.26);
+  powerDown(T.s4 + 2.0, 0.26);
+  // S5 — relief
+  bell(T.s5 + 0.15, midi(77), 0.1, 2.6, 0, 0.8); bell(T.s5 + 0.22, midi(72), 0.07, 2.6, -0.3, 0.8);
+  revSwell(T.s5 + 0.5, T.s6, 0.3);
+  // S6 — logo
+  bigImpact(T.s6, 1.0); shimmer(T.s6 + 0.5, 1.5, 0.05, 88); whoosh(T.s6 + 0.9, 0.6, 0.22, 600, 8000);
+  // S11 — feature 01 title
+  whoosh(T.s11 - 0.3, 0.5, 0.42, 200, 7000); impact(T.s11, 0.5, 150, 45, 0.6);
+  for (let k = 0; k < 22; k++) key(T.s11 + 0.9 + k * 0.028, 0.055);
+  // S12 — form: typing, picking, slider  (beats scale with the scene)
+  const k12 = (T.s12e - T.s12) / 4.2;
+  whoosh(T.s12 - 0.15, 0.5, 0.33, 150, 3000);
+  for (let n = 0; n < 17; n++) key(T.s12 + (0.5 + n / 30) * k12);
+  for (let n = 0; n < 13; n++) key(T.s12 + (1.12 + n / 40) * k12);
+  pop(T.s12 + 1.52 * k12, 900, 0.2); pop(T.s12 + 1.64 * k12, 1000, 0.2); pop(T.s12 + 1.78 * k12, 1300, 0.15);
+  click(T.s12 + 2.37 * k12); chime(T.s12 + 2.39 * k12, [77, 81], 0.1);
+  click(T.s12 + 2.92 * k12, 0.2);
+  for (let i = 0; i < 14; i++) tick(T.s12 + (2.97 + i * 0.038) * k12, 0.055, 5000 + i * 180);
+  click(T.s12 + 3.86 * k12);
+  whoosh(T.s12e - 0.45, 0.45, 0.45, 300, 6000, 0.8, -0.8);
+  // S13 — interests + pace
+  const k13 = (T.s13e - T.s13) / 3.6;
+  [[0.55, 72], [0.9, 76], [1.25, 79]].forEach(([o, n]) => { click(T.s13 + o * k13); chime(T.s13 + (o + 0.02) * k13, [n, n + 7], 0.1); });
+  click(T.s13 + 2.05 * k13); chime(T.s13 + 2.07 * k13, [84], 0.1);
+  click(T.s13 + 2.85 * k13, 0.33);
+  riser(T.s13 + 2.9 * k13, T.s13e, 0.28, 300, 8000);
+  whoosh(T.s13 + 3.0 * k13, 0.6, 0.35, 100, 3000);
+  // S14 — engine
+  impact(T.s14, 0.48, 120, 40, 0.6);
+  const k14 = (T.s14e - T.s14) / 2.1;
+  for (let i = 0; i < 6; i++) {
+    const t0 = T.s14 + (0.2 + i * 0.25) * k14;
+    for (let n = 0; n < 7; n++) blip(t0 + n * 0.032, 2000 + R() * 2000, 0.028, 0.015, 'square', (R() - 0.5));
+    blip(t0 + 0.42 * k14, midi(84 + (i % 3) * 2), 0.065, 0.12);
+  }
+  chime(T.s14e - 0.35, [72, 76, 79, 84], 0.14, 0.055);
+  whoosh(T.s14e - 0.3, 0.4, 0.42, 300, 8000);
+  // S15 — result itinerary: reveal, drag, smart fix
+  const k15 = (T.s15e - T.s15) / 5.1;
+  whoosh(T.s15, 0.5, 0.36, 200, 4000);
+  for (let i = 0; i < 4; i++) whoosh(T.s15 + (0.62 + i * 0.12) * k15, 0.3, 0.13, 600, 5000, 0.8, 0);
+  for (let i = 0; i < 20; i++) tick(T.s15 + (0.8 + i * 0.05) * k15, 0.055, 6000);
+  chime(T.s15 + 1.85 * k15, [79, 84], 0.12);
+  click(T.s15 + 2.45 * k15, 0.3);
+  whoosh(T.s15 + 2.55 * k15, 0.5, 0.12, 300, 1500, -0.2, 0.2);
+  click(T.s15 + 3.05 * k15, 0.2, 1200); blip(T.s15 + 3.08 * k15, 1760, 0.08); blip(T.s15 + 3.16 * k15, 2093, 0.08);
+  ping(T.s15 + 3.55 * k15, 988, 0.13); buzz(T.s15 + 3.55 * k15, 0.04, 0.09, 330);
+  click(T.s15 + 4.3 * k15, 0.3); chime(T.s15 + 4.33 * k15, [72, 76, 79], 0.12, 0.05);
+  pop(T.s15 + 4.6 * k15, 1400, 0.15);
+  whoosh(T.s15e - 0.4, 0.45, 0.45, 200, 7000);
+  // S16 — route map
+  const k16 = (T.s16e - T.s16) / 3.1;
+  whoosh(T.s16, 0.5, 0.33, 150, 3000);
+  riser(T.s16 + 0.25 * k16, T.s16 + 2.9 * k16, 0.075, 400, 3000);
+  [0.25, 0.62, 0.92, 1.3, 1.85].forEach((o, i) => pop(T.s16 + o * k16, 600 + i * 120, 0.22, -0.6 + i * 0.3));
+  [1.5, 2.0, 2.5].forEach(o => impact(T.s16 + o * k16, 0.5, 180, 50, 0.45));
+  whoosh(T.s16e - 0.45, 0.45, 0.45, 300, 7000, 0.8, -0.8);
+  // S17 — feature 02 title
+  bigImpact(T.s17, 0.75);
+  for (let k = 0; k < 26; k++) key(T.s17 + 0.15 + k * 0.016, 0.05);
+  whoosh(T.s17 + 0.3, 0.6, 0.24, 200, 5000);
+  whoosh(T.s17e - 0.45, 0.45, 0.45, 300, 6000, 0.8, -0.8);
+  // S18 — verified guides
+  const k18 = (T.s18e - T.s18) / 4.1;
+  whoosh(T.s18, 0.5, 0.3);
+  for (let n = 0; n < 16; n++) key(T.s18 + (0.3 + n / 40) * k18);
+  click(T.s18 + 0.78 * k18, 0.3);
+  for (let i = 0; i < 6; i++) { whoosh(T.s18 + (0.88 + i * 0.09) * k18, 0.26, 0.12, 700, 6000, -0.6 + i * 0.24, 0); pop(T.s18 + (0.95 + i * 0.09) * k18, 700 + i * 60, 0.1); }
+  chime(T.s18 + 1.7 * k18, [76, 79, 84], 0.11, 0.055);
+  for (let i = 0; i < 6; i++) blip(T.s18 + (1.75 + i * 0.08) * k18, 2637, 0.04, 0.045);
+  click(T.s18 + 3.6 * k18, 0.3);
+  whoosh(T.s18e - 0.4, 0.5, 0.35, 150, 3000);
+  // S19 — profile, booking, lands in the itinerary
+  const k19 = (T.s19e - T.s19) / 4.1;
+  whoosh(T.s19, 0.5, 0.3, 200, 4000);
+  click(T.s19 + 0.95 * k19); chime(T.s19 + 0.97 * k19, [79], 0.1);
+  click(T.s19 + 1.75 * k19, 0.35);
+  for (let i = 0; i < 9; i++) tick(T.s19 + (1.8 + i * 0.06) * k19, 0.05, 6000);
+  chime(T.s19 + 2.3 * k19, [72, 76, 79, 84, 88], 0.17, 0.065);
+  impact(T.s19 + 2.3 * k19, 0.34, 200, 60, 0.45); shimmer(T.s19 + 2.35 * k19, 0.9, 0.035, 88);
+  whoosh(T.s19 + 2.75 * k19, 0.45, 0.22, 200, 3000);
+  whoosh(T.s19 + 3.05 * k19, 0.55, 0.3, 400, 7000, 0.7, -0.4);
+  pop(T.s19 + 3.5 * k19, 1200, 0.25); bell(T.s19 + 3.52 * k19, midi(88), 0.1, 0.9);
+  whoosh(T.s19e - 0.4, 0.45, 0.45, 300, 6000, 0.8, -0.8);
+  // S21 — dashboard checklist
+  const k21 = (T.s21e - T.s21) / 2.1;
+  whoosh(T.s21, 0.5, 0.3);
+  for (let i = 0; i < 5; i++) { click(T.s21 + (0.45 + i * 0.22) * k21, 0.18, 1800); blip(T.s21 + (0.46 + i * 0.22) * k21, midi(79 + i * 2), 0.07, 0.11); }
+  // S22 — destination montage
+  bigImpact(T.s22, 0.9);
+  for (let i = 1; i < 4; i++) whoosh(T.s22 + i * S22_CUT - 0.14, 0.2, 0.26, 500, 7000, (i % 2 ? -0.7 : 0.7), 0);
+  impact(T.s22 + 0.8, 0.8, 170, 40, 0.65); impact(T.s22 + 1.6, 0.8, 170, 40, 0.65);
+  crash(T.s22 + 0.8, 0.12, 0.85); crash(T.s22 + 1.6, 0.12, 0.85);
+  riser(T.s22e - 0.6, T.s22e, 0.28, 400, 9000);
+  // S23 — end card
+  bigImpact(T.s23, 1.0); shimmer(T.s23 + 0.1, 1.6, 0.05, 88);
+  for (let i = 0; i < 4; i++) whoosh(T.s23 + 0.5 + i * 0.08, 0.35, 0.1, 400, 4000);
+  [0.95, 1.07, 1.19].forEach((o, i) => pop(T.s23 + o, 800 + i * 160, 0.2, -0.4 + i * 0.4));
+  [1.45, 1.57].forEach((o, i) => pop(T.s23 + o, 600 + i * 200, 0.25));
+  bell(T.s23 + 2.1, midi(84), 0.06, 2.6, 0, 0.9);
+  // soft tick as each caption appears
+  CAPS.forEach(c => blip(c[0], 2793, 0.032, 0.05, 'sine', 0));
 
   const buf = await ctx.startRendering();
   const L = buf.getChannelData(0), Rr = buf.getChannelData(1);

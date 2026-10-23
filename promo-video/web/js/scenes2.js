@@ -4,7 +4,7 @@
 
 /* ---------- S11  "Rencana liburan beres dalam 5 menit"  14.5 – 16.5 ---------- */
 addScene({
-  id: 's11', start: 14.5, end: 16.5,
+  id: 's11', start: T.s11, end: T.s11e,
   build(root) {
     const orb = (ic, x, y, col) => `<div class="abs s11o" style="left:${x}px;top:${y}px;width:110px;height:110px;border-radius:30px;background:rgba(15,23,42,.85);border:1.5px solid ${col};display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px ${col}88">${icon(ic, 52, col, 2.2)}</div>`;
     root.innerHTML = `<div class="cam persp">
@@ -18,7 +18,8 @@ addScene({
     return { t: splitText(root.querySelector('#s11t'), 'Rencana liburan[br][o]beres dalam 5 menit.[/o]', 'wd'), h: root.querySelector('#s11h'), l: root.querySelector('#s11l'), o: [...root.querySelectorAll('.s11o')] };
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'zoomOut', 'whipL', 0.3, 0.2);
+    transition(root, lt, dur, 'zoomOut', 'whipL', 0.5, 0.45);
+    const _k = 2.0 / dur; lt *= _k; dur = 2.0;
     riseIn(c.t, lt, 0.08, { stagger: 0.09, dur: 0.5, y: 100, rot: 4 });
     op(c.h, prog(lt, 0.7, 0.9));
     c.h.textContent = 'Fitur 01 · Itinerary sesuai keinginanmu'.slice(0, Math.ceil(prog(lt, 0.7, 1.2) * 39));
@@ -79,7 +80,7 @@ const inputBox = (id, ph, rightIcon = '') => `<div class="input" id="${id}" styl
 /* ---------- S12  Step 1 — "Cerita dulu soal rencanamu"  16.4 – 20.6 ---------- */
 const S12_H = 1250;
 addScene({
-  id: 's12', start: 16.4, end: 20.6, z: 2,
+  id: 's12', start: T.s12, end: T.s12e, z: 2,
   build(root) {
     const lbl = (x, y, t) => `<div class="abs" style="left:${x}px;top:${y}px;font-size:18px;font-weight:600">${t}</div>`;
     const hint = (x, y, t, id = '') => `<div class="abs" ${id ? `id="${id}"` : ''} style="left:${x}px;top:${y}px;font-size:15px;color:#64748B">${t}</div>`;
@@ -117,7 +118,8 @@ addScene({
     return ctx;
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'cut', 'whipL', 0.1, 0.22);
+    transition(root, lt, dur, 'fade', 'whipL', 0.45, 0.45);
+    const _k = 4.2 / dur; lt *= _k; dur = 4.2;
     const pin = E.o5(prog(lt, 0, 0.55));
     const fy = track(lt, [[0, 470], [1.85, 470], [2.25, 790], [2.6, 790], [2.95, 1060], [3.5, 1060], [3.8, 1120], [4.2, 1120]], E.io3);
     camPage(c.g, S12_H, fy, 0.95, `translateZ(${lerp(-900, 0, pin).toFixed(0)}px) rotateY(${(lerp(-34, -5, pin) + Math.sin(lt * 0.8) * 1.5).toFixed(2)}deg) rotateX(${lerp(16, 4, pin).toFixed(2)}deg)`);
@@ -149,15 +151,15 @@ addScene({
     c.cursor.update(lt, [[1.85, 700, 600], [2.3, 540, 830], [2.6, 540, 840], [2.9, 92, 1040], [3.45, 92 + 278, 1040], [3.55, 500, 1100], [3.85, 880, 1190], [4.2, 880, 1190]], [2.35, 2.9, 3.85], [1.85, 4.3]);
   },
 });
-CAPS.push([16.75, 18.3, 1, 'Tulis mau ke mana & kapan']);
-CAPS.push([18.3, 19.25, 2, 'Pergi sama siapa?']);
-CAPS.push([19.25, 20.45, 3, 'Atur budget-mu']);
+CAPS.push([T.s12 + 0.5, T.s12 + 2.3, 1, 'Tulis mau ke mana & kapan']);
+CAPS.push([T.s12 + 2.3, T.s12 + 3.6, 2, 'Pergi sama siapa?']);
+CAPS.push([T.s12 + 3.6, T.s12e - 0.3, 3, 'Atur budget-mu']);
 
 /* ---------- S13  Step 2 — "Apa yang kamu inginkan?"  20.5 – 24.1 ---------- */
 const S13_TILES = [['globe', 'Budaya & sejarah', 'Kampung adat, museum'], ['camera', 'Pemandangan alam', 'Bukit, pantai, air terjun'], ['food', 'Kuliner lokal', 'Warung, pasar malam'], ['bed', 'Santai & istirahat', 'Ngga mau dikejar waktu'], ['sun', 'Sunrise & sunset', 'Siap bangun subuh'], ['compass', 'Snorkeling laut', 'Terumbu, pulau kecil']];
 const S13_H = 1210;
 addScene({
-  id: 's13', start: 20.5, end: 24.1, z: 2,
+  id: 's13', start: T.s13, end: T.s13e, z: 2,
   build(root) {
     const tiles = S13_TILES.map(([ic, t, d], i) => uiChoice(32 + (i % 3) * 304, 116 + Math.floor(i / 3) * 156, 288, 140, ic, t, d, 's13t')).join('');
     const pace = [['bed', 'Santai 2–3 aktivitas sehari', 'Banyak waktu luang, bisa bangun siang!', 'background:#D1D5DB;color:#334155'], ['route', 'Seimbang 4–5 aktivitas sehari', 'Cukup padat tapi masih ada jeda', 'background:#EAF5FF;color:#35A8FF'], ['cal', 'Padat 6++ aktivitas sehari', 'Maksimalkan tiap jam, siap capek', 'background:#FFF1E9;color:#FF6B24']]
@@ -185,7 +187,8 @@ addScene({
     return ctx;
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'whipL', 'cut', 0.22, 0.1);
+    transition(root, lt, dur, 'whipL', 'fade', 0.45, 0.4);
+    const _k = 3.6 / dur; lt *= _k; dur = 3.6;
     const fy = track(lt, [[0, 480], [1.45, 480], [1.8, 900], [2.25, 900], [2.55, 1080], [3.6, 1080]], E.io3);
     const zoomOut = E.i3(prog(lt, 2.95, 3.4));
     camPage(c.g, S13_H, fy, 0.95, `translateZ(${(-zoomOut * 300).toFixed(0)}px) rotateY(${(-4 + Math.sin(lt * 0.8) * 1.5).toFixed(2)}deg) rotateX(4deg)`);
@@ -210,13 +213,13 @@ addScene({
     op(c.burst, bp > 0 ? 1 : 0);
   },
 });
-CAPS.push([20.75, 22.2, 4, 'Pilih yang kamu suka']);
-CAPS.push([22.2, 23.0, 5, 'Atur padatnya jadwal']);
-CAPS.push([23.0, 24.0, 6, 'Klik — rencana langsung disusun']);
+CAPS.push([T.s13 + 0.35, T.s13 + 2.1, 4, 'Pilih yang kamu suka']);
+CAPS.push([T.s13 + 2.1, T.s13 + 3.0, 5, 'Atur padatnya jadwal']);
+CAPS.push([T.s13 + 3.0, T.s13e - 0.25, 6, 'Klik — rencana langsung disusun']);
 
 /* ---------- S14  Itinerary engine  24.0 – 26.1 ---------- */
 addScene({
-  id: 's14', start: 24.0, end: 26.1, z: 3,
+  id: 's14', start: T.s14, end: T.s14e, z: 3,
   build(root) {
     let ticks = '';
     for (let i = 0; i < 120; i++) { const a = i / 120 * Math.PI * 2, r1 = 300, r2 = i % 10 ? 312 : 326; ticks += `<line x1="${400 + Math.cos(a) * r1}" y1="${400 + Math.sin(a) * r1}" x2="${400 + Math.cos(a) * r2}" y2="${400 + Math.sin(a) * r2}" stroke="#35A8FF" stroke-opacity="${i % 10 ? .4 : .9}" stroke-width="2"/>`; }
@@ -246,7 +249,8 @@ addScene({
     return { fill: q('#fill'), pr: q('#pr'), tk: q('#tk'), a1: q('#a1'), a2: q('#a2'), pct: q('#pct'), ok: q('#ok'), logs: logs, ls: [...root.querySelectorAll('.s14x')], ks: [...root.querySelectorAll('.s14k')], th: [...root.querySelectorAll('.s14th')], ring: q('#ring') };
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'cut', 'zoomThrough', 0.1, 0.22);
+    transition(root, lt, dur, 'fade', 'zoomThrough', 0.4, 0.45);
+    const _k = 2.1 / dur; lt *= _k; dur = 2.1;
     op(c.fill, 1 - E.o3(prog(lt, 0, 0.35)));
     const p = E.io3(prog(lt, 0.15, 1.75));
     c.pr.setAttribute('stroke-dashoffset', (1696 * (1 - p)).toFixed(1));
@@ -275,8 +279,8 @@ addScene({
     tf(c.ring, `scale(${lerp(0.9, 1.04, E.o3(lt / dur)).toFixed(4)})`);
   },
 });
-CAPS.push([24.3, 26.0, 0, 'Kelana menyusun rencanamu <span class="blue">otomatis</span>']);
-FLASH.push([25.82, 0.35, 0.25]);
+CAPS.push([T.s14 + 0.35, T.s14e - 0.2, 0, 'Kelana menyusun rencanamu <span class="blue">otomatis</span>']);
+FLASH.push([T.s14e - 0.3, 0.35, 0.3]);
 
 /* ---------- S15  Result itinerary  26.0 – 31.1 ---------- */
 const S15_ROWS = [
@@ -286,7 +290,7 @@ const S15_ROWS = [
   ['15.30', 'manta', 'Manta Point — berenang bareng pari manta', 'Arus lebih tenang jam ini', [['Tergantung cuaca', ''], ['1,5 jam', 'gray']]],
 ];
 addScene({
-  id: 's15', start: 26.0, end: 31.1, z: 2,
+  id: 's15', start: T.s15, end: T.s15e, z: 2,
   build(root) {
     const rowH = (r, i) => {
       const [tm, img, t, d, chips] = r;
@@ -345,7 +349,8 @@ addScene({
     return ctx;
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'whipU', 'zoomThrough', 0.3, 0.25);
+    transition(root, lt, dur, 'whipU', 'zoomThrough', 0.5, 0.45);
+    const _k = 5.1 / dur; lt *= _k; dur = 5.1;
     // camera
     const zin = E.io3(prog(lt, 2.0, 2.5)), zout = E.io3(prog(lt, 3.4, 3.8));
     const k = zin * (1 - zout);
@@ -401,14 +406,14 @@ addScene({
     c.cursor.update(lt, [[2.15, 900, 760], [2.45, 300, 765], [3.0, 300, 653], [3.35, 700, 700], [3.95, 560, 790], [4.3, 590, 830], [4.8, 640, 860]], [2.45, 4.3], [2.15, 4.9]);
   },
 });
-CAPS.push([26.45, 28.25, 0, 'Itinerary jadi — <span class="blue">pas dengan budget-mu</span>']);
-CAPS.push([28.25, 29.55, 0, 'Tinggal geser, jam diatur ulang otomatis']);
-CAPS.push([29.55, 30.95, 0, 'Ada yang bentrok? Kelana kasih saran']);
+CAPS.push([T.s15 + 0.5, T.s15 + 2.4, 0, 'Itinerary jadi — <span class="blue">pas dengan budget-mu</span>']);
+CAPS.push([T.s15 + 2.4, T.s15 + 4.0, 0, 'Tinggal geser, jam diatur ulang otomatis']);
+CAPS.push([T.s15 + 4.0, T.s15e - 0.25, 0, 'Ada yang bentrok? Kelana kasih saran']);
 
 /* ---------- S16  Route map  31.0 – 34.1 ---------- */
 const S16_PTS = [['Labuan Bajo', 1740, 430, 'Mulai', 'labuanbajo'], ['Pulau Padar', 1200, 860, 'Hari 2', 'padar'], ['Pink Beach', 880, 760, 'Hari 2', 'pinkbeach'], ['Pulau Komodo', 650, 430, 'Hari 2', 'komodo'], ['Manta Point', 1020, 330, 'Hari 3', 'manta']];
 addScene({
-  id: 's16', start: 31.0, end: 34.1, z: 2,
+  id: 's16', start: T.s16, end: T.s16e, z: 2,
   build(root) {
     const isl = [blob(620, 560, 330, 360, 3, 16, 0.25), blob(1380, 640, 190, 250, 8, 14, 0.3), blob(1170, 900, 90, 60, 11, 10, 0.3), blob(2050, 600, 330, 900, 5, 16, 0.12), blob(990, 520, 50, 35, 13, 9, 0.3), blob(1550, 330, 40, 30, 17, 9, 0.3)];
     const route = smoothPath(S16_PTS.map(p => [p[1], p[2]]), false, 0.8);
@@ -448,7 +453,8 @@ addScene({
     return { plane: q('#plane'), rg: q('#rg'), rc: q('#rc'), rd: q('#rd'), rp: q('#rp'), an: [...root.querySelectorAll('.s16a')], pins: [...root.querySelectorAll('.s16p')], boat: q('#boat'), w: [...root.querySelectorAll('.s16w')], mh: q('#mh') };
   },
   update(lt, c, dur, root) {
-    transition(root, lt, dur, 'zoomOut', 'whipL', 0.35, 0.2);
+    transition(root, lt, dur, 'zoomOut', 'fade', 0.5, 0.45);
+    const _k = 3.1 / dur; lt *= _k; dur = 3.1;
     const k = lt / dur;
     tf(c.plane, `translate3d(${lerp(180, -60, E.io3(k)).toFixed(1)}px,${lerp(80, 40, k).toFixed(1)}px,${lerp(-300, 0, E.o3(k)).toFixed(0)}px) rotateX(${lerp(50, 40, k).toFixed(2)}deg) rotateZ(${lerp(-8, 2, k).toFixed(2)}deg)`);
     const rp = E.io3(prog(lt, 0.25, 1.9));
@@ -479,4 +485,4 @@ addScene({
     c.w.forEach((w, i) => { const t0 = 1.5 + i * 0.5; const p = E.o5(prog(lt, t0, t0 + 0.2)); tf(w, `translateX(${((1 - p) * -80).toFixed(1)}px) scale(${lerp(1.3, 1, p).toFixed(3)})`); op(w, p); w.style.transformOrigin = '0 50%'; });
   },
 });
-SHAKE.push([32.5, 6, 0.2], [33.0, 6, 0.2], [33.5, 8, 0.25]);
+SHAKE.push([T.s16 + 1.6, 6, 0.3], [T.s16 + 2.1, 7, 0.35]);

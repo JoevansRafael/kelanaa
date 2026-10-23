@@ -11,9 +11,9 @@ const E = {
   i3: t => t * t * t,
   i4: t => t * t * t * t,
   io3: t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
-  io5: t => (t < .5 ? 16 * Math.pow(t, 5) : 1 - Math.pow(-2 * t + 2, 5) / 2),
   oExpo: t => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)),
   iExpo: t => (t <= 0 ? 0 : Math.pow(2, 10 * t - 10)),
+  io5: t => (t < .5 ? 16 * Math.pow(t, 5) : 1 - Math.pow(-2 * t + 2, 5) / 2),
   ioExpo: t => t <= 0 ? 0 : t >= 1 ? 1 : t < .5 ? Math.pow(2, 20 * t - 10) / 2 : (2 - Math.pow(2, -20 * t + 10)) / 2,
   back: t => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
   elastic: t => t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * (2 * Math.PI) / 3) + 1,
@@ -191,3 +191,30 @@ const GLITCH = [];  // [t0, t1]
 const CAPS = [];    // [t0, t1, num, text, cls]
 const SCENES = [];
 function addScene(def) { SCENES.push(def); }
+
+/* ======================  Master timeline (seconds)  ======================
+   Scenes overlap by ~0.4 s so every cut is a real transition, not a jump. */
+const T = {
+  // ACT 1 — problem, with the confused traveller
+  s1: 0.0, s1e: 4.2,     // "Mau liburan?" — character appears
+  s2: 3.8, s2e: 8.2,     // "Tapi… mau ke mana?" — map of options
+  s3: 7.8, s3e: 12.4,    // research chaos piles up
+  s4: 12.0, s4e: 14.8,   // budget blows up -> "nggak jadi liburan"
+  s5: 14.4, s5e: 16.8,   // "Tenang." — calm
+  s6: 16.4, s6e: 19.6,   // logo reveal
+  // ACT 2 — feature 01: custom itinerary
+  s11: 19.2, s11e: 21.8,
+  s12: 21.4, s12e: 26.8, // form: ke mana & kapan, sama siapa, budget
+  s13: 26.4, s13e: 30.6, // form: minat & tempo
+  s14: 30.2, s14e: 32.6, // engine
+  s15: 32.2, s15e: 38.0, // result itinerary
+  s16: 37.6, s16e: 40.6, // route map
+  // ACT 3 — feature 02: guide booking
+  s17: 40.2, s17e: 42.8,
+  s18: 42.4, s18e: 47.2, // verified guides
+  s19: 46.8, s19e: 52.4, // profile + booking -> into itinerary
+  // ACT 4 — resolution & CTA
+  s21: 52.0, s21e: 54.4, // dashboard
+  s22: 54.0, s22e: 56.4, // destination montage
+  s23: 56.0, s23e: 60.0, // end card
+};
