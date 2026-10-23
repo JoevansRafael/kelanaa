@@ -2,6 +2,7 @@
 
 Musik 120 BPM (1 ketukan = 0,5 dtk) — semua cut jatuh di ketukan.
 Gaya: panggung navy gelap `#0F172A`, grid teknikal, UI Kelana putih melayang dalam 3D dengan tepi glow `#35A8FF`, aksen `#FF6B24`.
+Font: Montserrat. Logo & foto destinasi memakai aset asli Kelana (`assets/photos/`).
 
 | # | Waktu | Adegan | Teks layar | Suara |
 |---|-------|--------|-----------|-------|
@@ -18,8 +19,8 @@ Gaya: panggung navy gelap `#0F172A`, grid teknikal, UI Kelana putih melayang dal
 | 10 | 12,0–14,6 | Reveal logo KELANA + gelombang cahaya | **KELANA · Keliling Nusantara** | DROP + shimmer |
 | **BABAK 2 — FITUR 01: ITINERARY CUSTOM** |||||
 | 11 | 14,5–16,5 | Tipografi kinetik | **Rencana liburan beres dalam 5 menit** | whoosh |
-| 12 | 16,4–20,6 | UI "Dasar": ketik tujuan, tanggal, pilih Pasangan, geser budget | Pilih tujuan & tanggal → Mau pergi sama siapa? → Atur budget-mu | ketik, klik, slider |
-| 13 | 20,5–24,1 | UI "Minat": pilih 3 minat + tempo "Seimbang" → tombol meledak jadi lingkaran | Pilih yang kamu suka → Atur padatnya jadwal | klik + chime naik |
+| 12 | 16,4–20,6 | Halaman "Cerita dulu soal rencanamu": ketik tujuan, tanggal, pilih Pasangan, geser budget | Pilih tujuan & tanggal → Mau pergi sama siapa? → Atur budget-mu | ketik, klik, slider |
+| 13 | 20,5–24,1 | Halaman "Apa yang kamu inginkan?": pilih 3 minat + tempo "Seimbang" → tombol meledak jadi lingkaran | Pilih yang kamu suka → Atur padatnya jadwal | klik + chime naik |
 | 14 | 24,0–26,1 | Mesin penyusun: cincin HUD, log data, 0→100% | Kelana menyusun rencanamu otomatis | data blip, riser |
 | 15 | 26,0–31,1 | Hasil: timeline Hari 2, estimasi biaya Rp 4,85 jt, drag aktivitas, saran pintar | Sesuai budget → Geser sesukamu → Ada yang bentrok? Kelana kasih saran | swoosh, tick, chime |
 | 16 | 31,0–34,1 | Peta rute 3D Labuan Bajo → Padar → Pink Beach → Komodo → Manta Point | **Rapi. Realistis. Sesuai budget.** | sweep rute, hit |
@@ -30,5 +31,5 @@ Gaya: panggung navy gelap `#0F172A`, grid teknikal, UI Kelana putih melayang dal
 | 20 | 44,0–46,1 | Open trip patungan: kuota terisi, harga turun | Mau lebih hemat? Gabung open trip | pop avatar |
 | 21 | 46,0–48,1 | Dashboard: hitung mundur keberangkatan + checklist | Semua rapi di satu tempat | tick checklist |
 | **BABAK 4 — RESOLUSI & CTA** |||||
-| 22 | 48,0–51,1 | Montase cepat 6 destinasi (0,5 dtk/cut) + koordinat HUD | **Nggak bingung. / Nggak takut salah. / Tinggal berangkat.** | hit per cut |
+| 22 | 48,0–51,1 | Montase cepat 8 foto destinasi (0,375 dtk/cut) + koordinat HUD | **Nggak bingung. / Nggak takut salah. / Tinggal berangkat.** | hit per cut |
 | 23 | 51,0–56,0 | End card logo, 3 fitur, tombol CTA | **Liburan bukan keinginan, tapi kebutuhan.** · Susun itinerary · Cari pemandu | impact akhir, outro |

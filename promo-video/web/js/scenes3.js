@@ -14,7 +14,7 @@ addScene({
         <svg width="1000" height="1000" viewBox="0 0 1000 1000"><g id="ct">${ticks}</g>
           <circle cx="500" cy="500" r="380" fill="none" stroke="#35A8FF" stroke-opacity=".25" stroke-width="1.5" stroke-dasharray="4 8"/>
           <g id="cn"><path d="M500,140 L520,500 L500,520 L480,500Z" fill="#FF6B24" opacity=".8"/><path d="M500,860 L520,500 L500,480 L480,500Z" fill="#35A8FF" opacity=".5"/></g>
-          <text x="500" y="40" fill="#35A8FF" font-family="Mono" font-size="28" text-anchor="middle">U</text></svg>
+          <text x="500" y="40" fill="#35A8FF" font-family="Montserrat" font-weight="600" font-size="28" text-anchor="middle">U</text></svg>
       </div>
       <div class="abs" style="left:0;right:0;top:300px;text-align:center">
         <div class="hud" id="h" style="font-size:24px"></div>
@@ -220,7 +220,7 @@ addScene({
         <div class="abs eyebrow" style="left:260px;top:110px">Open trip patungan</div>
         <div class="abs big" style="left:260px;top:138px;font-size:72px">Mau lebih <span class="orange">hemat?</span></div>
         <div class="card" id="c" style="left:260px;top:280px;width:1400px;height:520px">
-          <div class="abs thumb" style="left:0;top:0;width:440px;height:520px;border-radius:0">${art('rajaampat')}</div>
+          <div class="abs thumb" style="left:0;top:0;width:440px;height:520px;border-radius:0">${art('labuanbajo')}</div>
           <div class="abs chip orange" style="left:24px;top:24px;background:#fff">${icon('users', 18, '#FF6B24')} Hampir penuh</div>
           <div class="abs" style="left:480px;top:40px;width:470px">
             <div class="sub" style="display:flex;gap:6px;align-items:center">${icon('pin', 18, '#64748B')} Labuan Bajo, NTT</div>
@@ -281,7 +281,7 @@ addScene({
           </div>
           <div class="abs" style="left:760px;top:44px;width:696px">
             <div style="font-size:16px;font-weight:700;letter-spacing:.12em;color:#64748B">BERANGKAT DALAM</div>
-            <div style="display:flex;gap:16px;margin-top:12px">${[['d', '27', 'HARI'], ['h', '14', 'JAM'], ['m', '08', 'MENIT'], ['s', '42', 'DETIK']].map(([k, v, l]) => `<div style="flex:1;height:124px;border-radius:18px;background:#EAF5FF;display:flex;flex-direction:column;align-items:center;justify-content:center"><div id="cd${k}" style="font-size:54px;font-weight:800;color:#35A8FF;font-family:Mono">${v}</div><div style="font-size:14px;font-weight:700;color:#4087C4;letter-spacing:.1em">${l}</div></div>`).join('')}</div>
+            <div style="display:flex;gap:16px;margin-top:12px">${[['d', '27', 'HARI'], ['h', '14', 'JAM'], ['m', '08', 'MENIT'], ['s', '42', 'DETIK']].map(([k, v, l]) => `<div style="flex:1;height:124px;border-radius:18px;background:#EAF5FF;display:flex;flex-direction:column;align-items:center;justify-content:center"><div id="cd${k}" style="font-size:54px;font-weight:800;color:#35A8FF">${v}</div><div style="font-size:14px;font-weight:700;color:#4087C4;letter-spacing:.1em">${l}</div></div>`).join('')}</div>
             <div style="margin-top:24px;padding:20px 24px;border-radius:18px;background:#F8FAFC;border:1px solid #E2E8F0">
               <div style="display:flex;justify-content:space-between;font-size:19px;font-weight:700"><span>Persiapan</span><span id="pc">0 dari 5</span></div>
               <div style="height:10px;border-radius:5px;background:#E2E8F0;margin-top:10px"><div id="pb" style="height:100%;width:0;border-radius:5px;background:#16A34A;box-shadow:0 0 12px #16A34A"></div></div>
@@ -317,7 +317,8 @@ CAPS.push([46.3, 47.95, 0, 'Semua rencana rapi di satu tempat']);
 FLASH.push([48.0, 0.8, 0.3]);
 
 /* ---------- S22  Destination montage  48.0 – 51.1 ---------- */
-const S22 = [['padar', 'Pulau Padar · NTT', '8.65°S 119.58°E'], ['bromo', 'Gunung Bromo · Jawa Timur', '7.94°S 112.95°E'], ['rajaampat', 'Raja Ampat · Papua Barat Daya', '0.23°S 130.52°E'], ['borobudur', 'Candi Borobudur · Jawa Tengah', '7.61°S 110.20°E'], ['terraces', 'Tegallalang · Bali', '8.43°S 115.28°E'], ['toba', 'Danau Toba · Sumatera Utara', '2.68°N 98.87°E']];
+const S22 = [['padar', 'Pulau Padar · NTT', '8.65°S 119.58°E'], ['bromo', 'Gunung Bromo · Jawa Timur', '7.94°S 112.95°E'], ['rajaampat', 'Raja Ampat · Papua Barat Daya', '0.23°S 130.52°E'], ['borobudur', 'Candi Borobudur · Jawa Tengah', '7.61°S 110.20°E'], ['balibeach', 'Nusa Penida · Bali', '8.73°S 115.45°E'], ['terraces', 'Sawah Tegallalang · Bali', '8.43°S 115.28°E'], ['toba', 'Rumah Adat Batak · Samosir', '2.68°N 98.87°E'], ['jogja', 'Tugu Jogja · Yogyakarta', '7.78°S 110.37°E']];
+const S22_CUT = 3.0 / S22.length;
 addScene({
   id: 's22', start: 48.0, end: 51.1, z: 2,
   build(root) {
@@ -328,19 +329,19 @@ addScene({
       <div class="abs hud" style="left:100px;top:96px;color:#fff;font-size:20px">Kelana // Destinasi <span id="dn">01</span></div>
       <div class="abs" style="left:100px;bottom:100px"><div id="loc" style="font-size:40px;font-weight:800"></div><div class="hud" id="co" style="color:#CFE8FF;margin-top:6px;font-size:20px"></div></div>
       <div class="abs hud" style="right:100px;top:96px;color:#fff;font-size:20px;display:flex;gap:10px;align-items:center"><span style="width:14px;height:14px;border-radius:50%;background:#DC2626;box-shadow:0 0 12px #DC2626"></span>REC</div>
-      ${['Nggak bingung.', 'Nggak takut salah.', 'Tinggal berangkat.'].map((w, i) => `<div class="center display s22w" style="font-size:${i === 2 ? 200 : 180}px;white-space:nowrap;color:#fff;text-shadow:0 0 50px rgba(53,168,255,.8),0 8px 40px rgba(0,0,0,.5)">${i === 2 ? '<span style="color:#FF6B24">Tinggal</span> berangkat.' : w}</div>`).join('')}
+      ${['Nggak bingung.', 'Nggak takut salah.', 'Tinggal berangkat.'].map((w, i) => `<div class="center display s22w" style="font-size:${i === 2 ? 160 : 170}px;white-space:nowrap;color:#fff;text-shadow:0 0 50px rgba(53,168,255,.8),0 8px 40px rgba(0,0,0,.5)">${i === 2 ? '<span style="color:#FF6B24">Tinggal</span> berangkat.' : w}</div>`).join('')}
     </div>`;
     return { s: [...root.querySelectorAll('.s22s')], im: [...root.querySelectorAll('.s22i')], w: [...root.querySelectorAll('.s22w')], loc: root.querySelector('#loc'), co: root.querySelector('#co'), dn: root.querySelector('#dn') };
   },
   update(lt, c, dur, root) {
     transition(root, lt, dur, 'cut', 'cut');
-    const idx = Math.min(5, Math.floor(lt / 0.5));
+    const idx = Math.min(S22.length - 1, Math.floor(lt / S22_CUT));
     c.s.forEach((s, i) => {
       const on = i === idx; s.style.display = on ? 'block' : 'none';
       if (!on) return;
-      const d = lt - i * 0.5;
+      const d = lt - i * S22_CUT;
       const dir = i % 2 ? 1 : -1;
-      tf(c.im[i], `scale(${lerp(1.18, 1.06, E.o3(d / 0.5)).toFixed(4)}) translateX(${(dir * lerp(40, 0, E.o4(d / 0.5))).toFixed(1)}px)`);
+      tf(c.im[i], `scale(${lerp(1.18, 1.06, E.o3(d / S22_CUT)).toFixed(4)}) translateX(${(dir * lerp(40, 0, E.o4(d / S22_CUT))).toFixed(1)}px)`);
     });
     if (c.loc.dataset.i != idx) { c.loc.dataset.i = idx; c.loc.textContent = S22[idx][1]; c.co.textContent = S22[idx][2]; c.dn.textContent = '0' + (idx + 1); }
     c.w.forEach((w, i) => {
@@ -353,7 +354,7 @@ addScene({
     });
   },
 });
-for (let i = 1; i < 6; i++) FLASH.push([48.0 + i * 0.5, 0.25, 0.12]);
+for (let i = 1; i < S22.length; i++) FLASH.push([48.0 + i * S22_CUT, 0.22, 0.1]);
 SHAKE.push([49.0, 10, 0.2], [50.0, 10, 0.2]);
 
 /* ---------- S23  End card  51.0 – 56.0 ---------- */
@@ -363,7 +364,7 @@ addScene({
     const feat = [['route', 'Itinerary sesuai keinginan'], ['shield', 'Pemandu lokal terverifikasi'], ['wallet', 'Pas dengan budget']];
     root.innerHTML = `<div class="cam persp">
       <div class="abs" id="halo" style="left:960px;top:330px;width:1100px;height:600px;margin:-300px -550px;border-radius:50%;background:radial-gradient(ellipse,rgba(53,168,255,.35),rgba(53,168,255,0) 65%)"></div>
-      <div class="abs" id="logo" style="left:660px;top:170px;width:600px;height:227px;filter:drop-shadow(0 0 26px rgba(53,168,255,.85)) drop-shadow(0 0 70px rgba(53,168,255,.4))">${logoSVG('#35A8FF')}</div>
+      <div class="abs" id="logo" style="left:640px;top:165px;width:640px;height:230px;filter:drop-shadow(0 0 26px rgba(53,168,255,.85)) drop-shadow(0 0 70px rgba(53,168,255,.4))">${logoSVG('#35A8FF')}</div>
       <div class="abs hud" id="sub" style="left:0;right:0;top:420px;text-align:center;letter-spacing:.6em;color:#CFE8FF;font-size:22px">Keliling Nusantara</div>
       <div class="abs big" id="tag" style="left:0;right:0;top:490px;text-align:center;font-size:66px"></div>
       <div class="abs" id="feat" style="left:0;right:0;top:620px;display:flex;justify-content:center;gap:22px">${feat.map(([ic, t]) => `<div class="s23f" style="display:flex;gap:14px;align-items:center;padding:16px 26px;border-radius:999px;background:rgba(15,23,42,.8);border:1.5px solid rgba(53,168,255,.6);font-size:25px;font-weight:700;box-shadow:0 0 24px rgba(53,168,255,.3)">${icon(ic, 30, '#35A8FF', 2.2)} ${t}</div>`).join('')}</div>
@@ -381,6 +382,7 @@ addScene({
     transition(root, lt, dur, 'cut', 'cut');
     const ps = E.o5(prog(lt, 0, 0.7));
     tf(c.logo, `scale(${lerp(1.4, 1, ps).toFixed(4)})`);
+    { const wp = E.o4(prog(lt, 0, 0.55)); c.logo.style.clipPath = wp >= 1 ? 'none' : `inset(-80px ${((1 - wp) * 100).toFixed(2)}% -80px -80px)`; }
     c.letters.forEach((l, i) => { const p = E.o5(prog(lt, 0.02 + i * 0.05, 0.42 + i * 0.05)); l.setAttribute('transform', `translate(0 ${((1 - p) * 360).toFixed(1)})`); });
     op(c.halo, 0.6 + Math.sin(lt * 2) * 0.2);
     const pS = E.o4(prog(lt, 0.4, 0.9)); op(c.sub, pS); c.sub.style.letterSpacing = lerp(1.1, 0.6, pS).toFixed(3) + 'em';

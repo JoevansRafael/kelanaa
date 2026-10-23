@@ -10,14 +10,15 @@ process.env.TMPDIR = tmp;
 process.env.HOME = process.env.HOME && fs.existsSync(process.env.HOME) ? process.env.HOME : tmp;
 
 function overrides() {
-  const dir = path.join(ROOT, 'assets', 'photos');
+  // processed assets produced by prep_assets.js
+  const dir = path.join(ROOT, 'web', 'photos');
   const photos = {};
-  if (fs.existsSync(dir)) for (const f of fs.readdirSync(dir)) {
-    const m = f.match(/^([a-z]+)\.(jpe?g|png|webp)$/i);
-    if (m) photos[m[1].toLowerCase()] = 'file://' + path.join(dir, f);
-  }
   let logo = null;
-  for (const n of ['logo.png', 'logo.svg']) if (fs.existsSync(path.join(ROOT, 'assets', n))) logo = 'file://' + path.join(ROOT, 'assets', n);
+  if (fs.existsSync(dir)) for (const f of fs.readdirSync(dir)) {
+    const m = f.match(/^([a-z]+)\.(jpe?g|webp)$/i);
+    if (m) photos[m[1].toLowerCase()] = 'photos/' + f;
+  }
+  if (fs.existsSync(path.join(dir, 'logo.png'))) logo = 'photos/logo.png';
   return { photos, logo };
 }
 
@@ -41,7 +42,7 @@ async function openStage(browser) {
 }
 
 async function capture({ page, cdp }, t, format = 'jpeg', quality = 93) {
-  await page.evaluate(tt => window.KELANA.seek(tt), t);
+  await page.evaluate(tt => new Promise(r => { window.KELANA.seek(tt); requestAnimationFrame(() => requestAnimationFrame(() => r())); }), t);
   const r = await cdp.send('Page.captureScreenshot', { format, quality: format === 'jpeg' ? quality : undefined, optimizeForSpeed: true, captureBeyondViewport: false });
   return Buffer.from(r.data, 'base64');
 }

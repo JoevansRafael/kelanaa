@@ -2,4 +2,8 @@ promo-video/out/frames/
 promo-video/out/stills/
 promo-video/.chrome-tmp/
 promo-video/out/sheet*
+promo-video/out/s[0-9].jpg
+promo-video/out/vf.jpg
+# derived from assets/photos by prep_assets.js
+promo-video/web/photos/
 node_modules/

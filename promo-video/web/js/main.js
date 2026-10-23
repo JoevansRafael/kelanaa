@@ -160,7 +160,7 @@ function seek(t) {
 
 window.KELANA = {
   DURATION, FPS, seek,
-  ready: document.fonts.ready.then(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))),
+  ready: document.fonts.ready.then(() => Promise.all([...document.images].map(i => i.decode().catch(() => console.error('img fail ' + i.src))))).then(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))),
 };
 /* preview mode: open index.html?t=12.3 or ?play */
 (function preview() {

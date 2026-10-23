@@ -268,7 +268,7 @@ const LOGO_LETTERS = [ // [char, x0, x1, skew]
   ['K', 66, 191, -5], ['E', 196, 335, -7], ['L', 339, 472, 5], ['A', 477, 643, 3], ['N', 648, 816, -3], ['A', 821, 962, 6]];
 function logoSVG(color = '#35A8FF', opts = {}) {
   const ov = window.LOGO_OVERRIDE;
-  if (ov) return `<img src="${ov}" style="width:100%;height:100%;object-fit:contain;display:block">`;
+  if (ov) { const src = /^#?f{3,6}$/i.test(color.replace('#', '')) || color === '#ffffff' ? ov.replace('logo.png', 'logo-white.png') : ov; return `<img src="${src}" style="width:100%;height:100%;object-fit:contain;display:block">`; }
   // Letters follow the "footprint" outline of the Kelana mark: each glyph is
   // stretched so its top/bottom sit on the outline at that x position.
   const top = SOLE_PTS.slice(1, 12), bot = SOLE_PTS.slice(13).reverse();
@@ -279,7 +279,7 @@ function logoSVG(color = '#35A8FF', opts = {}) {
     const cx = (x0 + x1) / 2;
     const yt = Math.min(at(top, cx) + 14, 418), yb = Math.max(at(bot, cx) - 10, 596);
     const sy = (yb - yt) / CAP;
-    letters += `<g class="lgl" data-i="${i}"><g transform="translate(${(cx - 60).toFixed(1)} ${(yb - 310).toFixed(1)}) skewX(${(sk * 0.6).toFixed(1)}) scale(1 ${sy.toFixed(3)})"><text x="0" y="0" font-family="Display" font-weight="900" font-size="${F}" text-anchor="middle" fill="${color}" textLength="${(x1 - x0 - 12)}" lengthAdjust="spacingAndGlyphs">${c}</text></g></g>`;
+    letters += `<g class="lgl" data-i="${i}"><g transform="translate(${(cx - 60).toFixed(1)} ${(yb - 310).toFixed(1)}) skewX(${(sk * 0.6).toFixed(1)}) scale(1 ${sy.toFixed(3)})"><text x="0" y="0" font-family="Montserrat" font-weight="700" font-size="${F}" text-anchor="middle" fill="${color}" textLength="${(x1 - x0 - 12)}" lengthAdjust="spacingAndGlyphs">${c}</text></g></g>`;
   });
   const cid = gid('lc');
   return `<svg viewBox="0 0 910 345" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;overflow:visible"><defs><clipPath id="${cid}"><rect x="-60" y="-30" width="1030" height="${345 + 40}"/></clipPath></defs><g clip-path="url(#${cid})">${letters}</g></svg>`;

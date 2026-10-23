@@ -262,8 +262,8 @@ addScene({
           <path id="s6fill" d="M140,500 A360,360 0 0 1 860,500" stroke="url(#s6arc)" stroke-width="44" fill="none" stroke-linecap="round" stroke-dasharray="1131" stroke-dashoffset="1131" style="filter:drop-shadow(0 0 18px rgba(220,38,38,.7))"/>
           ${ticks}
           <g id="s6needle"><path d="M484,262 L500,150 L516,262Z" fill="#fff" style="filter:drop-shadow(0 0 10px #fff)"/></g>
-          <text x="140" y="570" fill="#94A3B8" font-size="26" text-anchor="middle" font-family="Mono">Rp 0</text>
-          <text x="860" y="570" fill="#94A3B8" font-size="26" text-anchor="middle" font-family="Mono">Rp 10 jt</text>
+          <text x="140" y="570" fill="#94A3B8" font-size="26" text-anchor="middle" font-family="Montserrat" font-weight="600">Rp 0</text>
+          <text x="860" y="570" fill="#94A3B8" font-size="26" text-anchor="middle" font-family="Montserrat" font-weight="600">Rp 10 jt</text>
           <line x1="500" y1="110" x2="500" y2="150" stroke="#fff" stroke-width="4" stroke-dasharray="6 6" transform="rotate(0 500 500)"/>
         </svg>
         <div class="abs" style="left:0;right:0;top:250px;text-align:center">
@@ -388,8 +388,8 @@ addScene({
     root.innerHTML = `<div class="cam persp">
       <div class="abs" id="s10ring" style="left:960px;top:470px;width:400px;height:400px;margin:-200px;border-radius:50%;border:3px solid #35A8FF;box-shadow:0 0 50px rgba(53,168,255,.9),inset 0 0 50px rgba(53,168,255,.6)"></div>
       <div class="abs" id="s10ring2" style="left:960px;top:470px;width:400px;height:400px;margin:-200px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7)"></div>
-      <div class="abs" id="s10logo" style="left:510px;top:300px;width:900px;height:341px;filter:drop-shadow(0 0 30px rgba(53,168,255,.85)) drop-shadow(0 0 80px rgba(53,168,255,.45))">${logoSVG('#35A8FF')}</div>
-      <div class="abs" id="s10shine" style="left:510px;top:300px;width:900px;height:341px;mix-blend-mode:screen;opacity:.9;-webkit-mask-image:linear-gradient(100deg,transparent 40%,#000 50%,transparent 60%);-webkit-mask-size:300% 100%;-webkit-mask-repeat:no-repeat">${logoSVG('#ffffff')}</div>
+      <div class="abs" id="s10logo" style="left:510px;top:310px;width:900px;height:324px;filter:drop-shadow(0 0 30px rgba(53,168,255,.85)) drop-shadow(0 0 80px rgba(53,168,255,.45))">${logoSVG('#35A8FF')}</div>
+      <div class="abs" id="s10shine" style="left:510px;top:310px;width:900px;height:324px;mix-blend-mode:screen;opacity:.9;-webkit-mask-image:linear-gradient(100deg,transparent 40%,#000 50%,transparent 60%);-webkit-mask-size:300% 100%;-webkit-mask-repeat:no-repeat">${logoSVG('#ffffff')}</div>
       ${['tl', 'tr', 'bl', 'br'].map(k => `<div class="abs s10br" data-k="${k}" style="width:46px;height:46px;border-color:#35A8FF;border-style:solid;border-width:${k[0] === 't' ? 3 : 0}px ${k[1] === 'r' ? 3 : 0}px ${k[0] === 'b' ? 3 : 0}px ${k[1] === 'l' ? 3 : 0}px;left:${k[1] === 'l' ? 450 : 1424}px;top:${k[0] === 't' ? 250 : 646}px"></div>`).join('')}
       <div class="abs hud" id="s10sub" style="left:0;right:0;top:700px;text-align:center;font-size:30px;letter-spacing:.6em;color:#CFE8FF">KELILING NUSANTARA</div>
       <div class="abs" id="s10tag" style="left:0;right:0;top:770px;text-align:center;font-size:46px;font-weight:600;color:#fff"></div>
@@ -404,6 +404,8 @@ addScene({
     transition(root, lt, dur, 'cut', 'zoomThrough', 0.1, 0.25);
     const ps = E.o5(prog(lt, 0, 0.6));
     tf(c.logo, `scale(${lerp(1.25, 1, ps).toFixed(4)})`); tf(c.shine, `scale(${lerp(1.25, 1, ps).toFixed(4)})`);
+    const wp = E.o4(prog(lt, 0.02, 0.5)); const wipe = wp >= 1 ? 'none' : `inset(-80px ${((1 - wp) * 100).toFixed(2)}% -80px -80px)`;
+    if (!c.letters.length) { c.logo.style.clipPath = wipe; }
     c.letters.forEach((l, i) => { const p = E.o5(prog(lt, 0.02 + i * 0.05, 0.4 + i * 0.05)); l.setAttribute('transform', `translate(0 ${((1 - p) * 360).toFixed(1)})`); c.sL[i].setAttribute('transform', `translate(0 ${((1 - p) * 360).toFixed(1)})`); });
     const sp = prog(lt, 0.55, 1.15);
     c.shine.style.webkitMaskPosition = `${lerp(100, 0, sp).toFixed(1)}% 0`;

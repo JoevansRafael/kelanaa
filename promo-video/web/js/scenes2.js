@@ -28,165 +28,180 @@ addScene({
 });
 
 /* ---------- shared UI builders ---------- */
+/* ---------- shared UI builders (mirrors the Kelana web design) ---------- */
 function navbarHTML(active = 'Jelajah') {
-  return `<div class="navbar" style="height:70px;padding:0 36px;font-size:16px;gap:30px"><div style="width:110px;height:42px">${logoSVG('#35A8FF')}</div>
-    ${['Beranda', 'Jelajah', 'Forum', 'Booking', 'Trip Saya'].map(n => `<span class="${n === active ? 'act' : ''}">${n}</span>`).join('')}<span class="sp"></span><span>Masuk</span>
-    <span class="btn" style="height:40px;padding:0 22px;font-size:16px">Daftar</span></div>`;
+  return `<div class="navbar" style="height:84px;padding:0 60px;font-size:18px;gap:0;justify-content:space-between">
+    <div style="width:118px;height:44px">${logoSVG('#35A8FF')}</div>
+    <div style="display:flex;gap:44px;font-weight:600">${['Beranda', 'Jelajah', 'Forum', 'Booking', 'Trip Saya'].map(n => `<span style="${n === active ? 'color:#35A8FF' : ''}">${n}</span>`).join('')}</div>
+    <div style="display:flex;gap:26px;align-items:center;font-weight:600"><span>Masuk</span><span class="btn" style="height:46px;padding:0 26px;font-size:17px">Daftar</span></div></div>`;
 }
 function stepperHTML(n) {
-  const st = (i, l) => `<div class="${i <= n ? 'on' : ''}"><div class="dot">${i < n ? icon('check', 20, '#fff', 3) : i}</div>${l}</div>`;
-  return `<div class="stepper">${st(1, 'Dasar')}<div class="line"></div>${st(2, 'Minat')}<div class="line"></div>${st(3, 'Rencana')}</div>`;
+  const st = (i, l) => {
+    const on = i === n;
+    return `<div style="display:flex;align-items:center;gap:12px;color:${on ? '#35A8FF' : '#94A3B8'};font-weight:600;font-size:19px">
+      <div style="width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;${on ? 'background:#35A8FF;color:#fff;box-shadow:0 0 18px rgba(53,168,255,.7)' : 'background:#fff;border:1.5px solid #E2E8F0;color:#64748B'}">${i}</div>${l}</div>`;
+  };
+  return `<div style="display:flex;align-items:center;gap:16px">${st(1, 'Dasar')}<div style="width:60px;height:2px;background:#E2E8F0"></div>${st(2, 'Minat')}<div style="width:60px;height:2px;background:#E2E8F0"></div>${st(3, 'Rencana')}</div>`;
 }
 function summaryHTML(rows, extra = '') {
-  return `<div style="padding:28px">
-    <div style="font-size:26px;font-weight:700">Ringkasan</div>
-    <div class="thumb" style="height:220px;margin-top:16px;border-radius:18px">${art('padar')}</div>
-    ${rows.map(([k, id, v]) => `<div style="display:flex;justify-content:space-between;font-size:19px;margin-top:16px"><span style="color:#64748B">${k}</span><b id="${id}">${v}</b></div>`).join('')}
+  return `<div style="padding:26px 24px">
+    <div style="font-size:24px;font-weight:600">Ringkasan</div>
+    <div class="thumb" style="height:200px;margin-top:16px;border-radius:16px">${art('balibeach')}</div>
+    ${rows.map(([k, id, v]) => `<div style="display:flex;justify-content:space-between;font-size:17px;margin-top:14px"><span style="color:#64748B">${k}</span><b id="${id}" style="font-weight:700">${v}</b></div>`).join('')}
     ${extra}</div>`;
 }
+/* light "web page" panel floating on the dark stage */
+function pageShell(h, inner) {
+  return `<div class="abs kpage" style="left:200px;top:0;width:1520px;height:${h}px;background:#F8FAFC;border-radius:28px;overflow:hidden;color:#0F172A;
+    box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 0 1.5px rgba(53,168,255,.55),0 0 70px rgba(53,168,255,.35);transform-origin:760px ${h / 2}px">
+    ${navbarHTML('Jelajah')}${inner}</div>`;
+}
+/* place the page so that page-y `fy` sits at screen-y 470 */
+function camPage(el, H, fy, S, extra = '') {
+  const top = 490 - (fy - H / 2) * S - H / 2;
+  el.style.transform = `translate3d(0px,${top.toFixed(1)}px,0) ${extra} scale(${S})`;
+}
+const uiCard = (x, y, w, h, inner, id = '') => `<div class="abs" ${id ? `id="${id}"` : ''} style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:#fff;border:1px solid #E2E8F0;border-radius:24px;box-shadow:0 4px 18px rgba(15,23,42,.05)">${inner}</div>`;
+const uiChoice = (x, y, w, h, ic, t, d, cls = '', icoStyle = '') => `<div class="abs ${cls}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;border:1.5px solid #E2E8F0;border-radius:18px;background:#fff;padding:20px">
+  <div style="width:46px;height:46px;border-radius:12px;background:#EAF5FF;display:flex;align-items:center;justify-content:center;${icoStyle}">${icon(ic, 24, icoStyle.includes('color') ? 'currentColor' : '#35A8FF', 2)}</div>
+  <div style="font-size:20px;font-weight:700;margin-top:16px">${t}</div><div style="font-size:15px;color:#64748B;margin-top:6px">${d}</div>
+  <div class="check" style="right:14px;top:14px;opacity:0;width:30px;height:30px">${icon('check', 17, '#fff', 3)}</div></div>`;
+function setSel(el, on, t0, lt) {
+  el.style.borderColor = on ? '#35A8FF' : '#E2E8F0';
+  el.style.background = on ? '#EAF5FF' : '#fff';
+  el.style.boxShadow = on ? '0 0 0 3px rgba(53,168,255,.18),0 0 26px rgba(53,168,255,.45)' : '';
+  const ck = el.querySelector('.check');
+  op(ck, on ? 1 : 0); tf(ck, `scale(${on ? E.back(prog(lt, t0, t0 + 0.18)).toFixed(3) : 0})`);
+  tf(el, `scale(${(on ? 1 + 0.05 * Math.exp(-(lt - t0) * 9) : 1).toFixed(4)})`);
+}
+const inputBox = (id, ph, rightIcon = '') => `<div class="input" id="${id}" style="height:62px;border-radius:14px;font-size:20px;justify-content:space-between"><span><span class="v"></span><span class="caret" style="height:24px;opacity:0"></span><span class="ph" style="color:#94A3B8">${ph}</span></span>${rightIcon}</div>`;
 
-/* ---------- S12  Step 1 — Dasar  16.4 – 20.6 ---------- */
+/* ---------- S12  Step 1 — "Cerita dulu soal rencanamu"  16.4 – 20.6 ---------- */
+const S12_H = 1250;
 addScene({
   id: 's12', start: 16.4, end: 20.6, z: 2,
   build(root) {
-    const opt = (x, ic, t, d, id) => `<div class="opt" id="${id}" style="left:${x}px;top:590px;width:306px;height:150px"><div class="ico">${icon(ic, 28, '#35A8FF')}</div><div class="t">${t}</div><div class="d">${d}</div><div class="check" style="right:16px;top:16px;opacity:0">${icon('check', 20, '#fff', 3)}</div></div>`;
-    root.innerHTML = `<div class="cam persp" style="perspective:2400px">
-      <div class="abs" id="g" style="left:200px;top:0;width:1520px;height:1010px;transform-style:preserve-3d;transform-origin:760px 400px">
-        <div class="card" style="left:0;top:0;width:1060px;height:1010px">
-          <div class="abs eyebrow" style="left:48px;top:44px">Penyusun itinerary</div>
-          <div class="abs" style="left:48px;top:74px;font-size:42px;font-weight:700;letter-spacing:-.02em">Cerita dulu soal rencanamu</div>
-          <div class="abs" style="right:44px;top:66px;transform:scale(.82);transform-origin:100% 50%">${stepperHTML(1)}</div>
-          <div class="abs" style="left:48px;right:48px;top:152px;height:1px;background:#E2E8F0"></div>
-          <div class="abs" style="left:48px;top:182px;font-size:28px;font-weight:700">Ke mana dan kapan?</div>
-          <div class="abs" style="left:48px;top:236px;width:470px"><div class="label">Tujuan utama</div><div class="input" id="in1">${icon('pin', 24, '#35A8FF')}<span id="v1"></span><span class="caret" id="c1"></span></div></div>
-          <div class="abs" style="left:542px;top:236px;width:470px"><div class="label">Titik keberangkatan</div><div class="input" id="in2">${icon('plane', 24, '#35A8FF')}<span id="v2"></span><span class="caret" id="c2"></span></div></div>
-          <div class="abs" style="left:48px;top:362px;width:470px"><div class="label">Tanggal pergi</div><div class="input" id="in3">${icon('cal', 24, '#35A8FF')}<span id="v3"></span></div></div>
-          <div class="abs" style="left:542px;top:362px;width:470px"><div class="label">Tanggal pulang</div><div class="input" id="in4">${icon('cal', 24, '#35A8FF')}<span id="v4"></span></div></div>
-          <div class="abs chip" id="dchip" style="left:542px;top:478px">${icon('clock', 18, '#4087C4')} 4 hari 3 malam</div>
-          <div class="abs" style="left:48px;top:540px;font-size:28px;font-weight:700">Jalan sama siapa?</div>
-          ${opt(48, 'compass', 'Sendiri', 'Fleksibel, hemat', 'o1')}${opt(377, 'heart', 'Pasangan', '2 orang', 'o2')}${opt(706, 'users', 'Rombongan', '3–12 orang', 'o3')}
-          <div class="abs" style="left:48px;top:780px;font-size:28px;font-weight:700">Budget per orang</div>
-          <div class="abs blue" id="bval" style="right:48px;top:776px;font-size:34px;font-weight:800">Rp 0,50 jt</div>
-          <div class="abs" style="left:48px;top:852px;width:964px;height:10px;border-radius:5px;background:#E2E8F0"><div id="bfill" style="height:100%;width:0;border-radius:5px;background:#35A8FF;box-shadow:0 0 14px #35A8FF"></div></div>
-          <div class="abs" id="knob" style="left:48px;top:857px;width:34px;height:34px;margin:-17px;border-radius:50%;background:#fff;border:6px solid #35A8FF;box-shadow:0 0 18px rgba(53,168,255,.9)"></div>
-          <div class="abs sub" style="left:48px;top:884px">Rp 500 rb</div><div class="abs sub" style="right:48px;top:884px">Rp 15 jt</div>
-          <div class="abs" style="left:48px;top:930px;font-size:22px;font-weight:600;display:flex;align-items:center;gap:8px;height:62px">Batal</div>
-          <div class="abs btn" id="next" style="right:48px;top:922px">Lanjut ke minat ${icon('arrow', 24, '#fff', 2.6)}</div>
-        </div>
-        <div class="card" id="sum" style="left:1100px;top:0;width:420px;height:470px">${summaryHTML([['Tujuan', 'r1', '–'], ['Durasi', 'r2', '–'], ['Peserta', 'r3', '–'], ['Budget', 'r4', '–']])}</div>
-        <div id="cur" class="abs" style="left:0;top:0;width:1520px;height:1010px"></div>
-      </div></div>`;
+    const lbl = (x, y, t) => `<div class="abs" style="left:${x}px;top:${y}px;font-size:18px;font-weight:600">${t}</div>`;
+    const hint = (x, y, t, id = '') => `<div class="abs" ${id ? `id="${id}"` : ''} style="left:${x}px;top:${y}px;font-size:15px;color:#64748B">${t}</div>`;
+    const calIco = icon('cal', 22, '#0F172A', 1.8);
+    const cardA = uiCard(60, 250, 960, 380, `
+      <div class="abs" style="left:32px;top:28px;font-size:27px;font-weight:700">Ke mana dan kapan?</div>
+      ${lbl(32, 92, 'Tujuan utama')}<div class="abs" style="left:32px;top:124px;width:430px">${inputBox('in1', '')}</div>${hint(32, 196, 'Bisa tambah kota kedua nanti.')}
+      ${lbl(498, 92, 'Titik keberangkatan')}<div class="abs" style="left:498px;top:124px;width:430px">${inputBox('in2', '')}</div>${hint(498, 196, 'Dipakai buat estimasi tiket pesawat.')}
+      ${lbl(32, 238, 'Tanggal pergi')}<div class="abs" style="left:32px;top:270px;width:430px">${inputBox('in3', 'mm/dd/yyyy', calIco)}</div>
+      ${lbl(498, 238, 'Tanggal pulang')}<div class="abs" style="left:498px;top:270px;width:430px">${inputBox('in4', 'mm/dd/yyyy', calIco)}</div>${hint(498, 342, '4 hari 3 malam', 'dhint')}`);
+    const cardB = uiCard(60, 650, 960, 270, `
+      <div class="abs" style="left:32px;top:28px;font-size:27px;font-weight:700">Jalan sama siapa?</div>
+      ${uiChoice(32, 92, 288, 150, 'compass', 'Sendiri', 'Fleksibel, hemat', 'o1')}${uiChoice(336, 92, 288, 150, 'heart', 'Pasangan', '2 orang', 'o2')}${uiChoice(640, 92, 288, 150, 'users', 'Rombongan', '3–12 orang', 'o3')}`);
+    const cardC = uiCard(60, 940, 960, 200, `
+      <div class="abs" style="left:32px;top:28px;font-size:27px;font-weight:700">Budget per orang</div>
+      <div class="abs" id="bval" style="right:32px;top:26px;font-size:28px;font-weight:700;color:#4087C4">Rp 0,50 jt</div>
+      <div class="abs" style="left:32px;top:96px;width:896px;height:8px;border-radius:4px;background:#E2E8F0"><div id="bfill" style="height:100%;width:0;border-radius:4px;background:#35A8FF"></div></div>
+      <div class="abs" id="knob" style="left:32px;top:100px;width:24px;height:24px;margin:-12px;border-radius:50%;background:#35A8FF;box-shadow:0 0 0 5px rgba(53,168,255,.2),0 0 16px rgba(53,168,255,.9)"></div>
+      ${hint(32, 120, 'Rp 500 rb')}<div class="abs" style="right:32px;top:120px;font-size:15px;color:#64748B">Rp 15 jt</div>
+      ${hint(32, 156, 'Belum termasuk tiket pesawat. Kelana bakal nyusun rencana yang pas di angka ini.')}`);
+    root.innerHTML = `<div class="cam persp" style="perspective:2600px">
+      ${pageShell(S12_H, `
+        <div class="abs eyebrow" style="left:60px;top:128px;font-size:15px">Penyusun itinerary</div>
+        <div class="abs" style="left:60px;top:154px;font-size:42px;font-weight:700;letter-spacing:-.02em">Cerita dulu soal rencanamu</div>
+        <div class="abs" style="right:60px;top:140px">${stepperHTML(1)}</div>
+        ${cardA}${cardB}${cardC}
+        <div class="abs" style="left:60px;top:1160px;height:62px;display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600">${icon('arrow', 20, '#0F172A', 2.4).replace('<svg', '<svg style="transform:scaleX(-1);display:block"')} Batal</div>
+        <div class="abs btn" id="next" style="left:740px;top:1158px;width:280px;height:66px;font-size:21px;font-weight:600">Lanjut ke minat ${icon('arrow', 22, '#fff', 2.4)}</div>
+        <div class="abs" id="sum" style="left:1060px;top:250px;width:400px;height:420px;background:#fff;border:1px solid #E2E8F0;border-radius:24px;box-shadow:0 10px 30px rgba(15,23,42,.08)">${summaryHTML([['Tujuan', 'r1', '–'], ['Durasi', 'r2', '–'], ['Peserta', 'r3', '–'], ['Budget', 'r4', '–']])}</div>
+        <div id="cur" class="abs" style="left:0;top:0;width:1520px;height:${S12_H}px"></div>`)}
+    </div>`;
     const q = s => root.querySelector(s);
-    const ctx = { g: q('#g'), v1: q('#v1'), v2: q('#v2'), v3: q('#v3'), v4: q('#v4'), c1: q('#c1'), c2: q('#c2'), in1: q('#in1'), in2: q('#in2'), in3: q('#in3'), in4: q('#in4'), dchip: q('#dchip'),
-      o2: q('#o2'), chk: q('#o2 .check'), bval: q('#bval'), bfill: q('#bfill'), knob: q('#knob'), next: q('#next'), sum: q('#sum'), r: [q('#r1'), q('#r2'), q('#r3'), q('#r4')] };
+    const ctx = { g: q('.kpage'), ins: ['#in1', '#in2', '#in3', '#in4'].map(s => q(s)), dhint: q('#dhint'), o2: q('.o2'), bval: q('#bval'), bfill: q('#bfill'), knob: q('#knob'), next: q('#next'), sum: q('#sum'), r: [q('#r1'), q('#r2'), q('#r3'), q('#r4')] };
     ctx.cursor = new Cursor(q('#cur'));
     return ctx;
   },
   update(lt, c, dur, root) {
     transition(root, lt, dur, 'cut', 'whipL', 0.1, 0.22);
-    // fly-in + camera follow focus
     const pin = E.o5(prog(lt, 0, 0.55));
-    const ty = track(lt, [[0, 127], [1.85, 127], [2.25, -143], [2.55, -143], [2.9, -299], [4.2, -299]], E.io3);
-    const ry = lerp(-38, -7, pin) + Math.sin(lt * 0.8) * 2, rx = lerp(18, 5, pin);
-    tf(c.g, `translate3d(0px,${ty.toFixed(1)}px,${lerp(-900, 0, pin).toFixed(0)}px) rotateY(${ry.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg) scale(.82)`);
+    const fy = track(lt, [[0, 470], [1.85, 470], [2.25, 790], [2.6, 790], [2.95, 1060], [3.5, 1060], [3.8, 1120], [4.2, 1120]], E.io3);
+    camPage(c.g, S12_H, fy, 0.95, `translateZ(${lerp(-900, 0, pin).toFixed(0)}px) rotateY(${(lerp(-34, -5, pin) + Math.sin(lt * 0.8) * 1.5).toFixed(2)}deg) rotateX(${lerp(16, 4, pin).toFixed(2)}deg)`);
     op(c.g, prog(lt, 0, 0.15));
-    tf(c.sum, `translateZ(${(60 + Math.sin(lt * 1.5) * 10).toFixed(1)}px)`);
-    // typing
-    const T1 = 'Labuan Bajo, NTT', T2 = 'Jakarta (CGK)';
-    c.v1.textContent = typed(T1, lt, 0.5, 30);
-    c.v2.textContent = typed(T2, lt, 1.12, 40);
-    const f1 = lt > 0.45 && lt < 1.1, f2 = lt >= 1.1 && lt < 1.5;
-    c.in1.classList.toggle('focus', f1); c.in2.classList.toggle('focus', f2);
-    op(c.c1, f1 && caretOn(lt) ? 1 : 0); op(c.c2, f2 && caretOn(lt) ? 1 : 0);
-    const d1 = E.back(prog(lt, 1.5, 1.7)), d2 = E.back(prog(lt, 1.62, 1.82));
-    c.v3.textContent = lt > 1.5 ? 'Kam, 12 Nov 2026' : ''; c.v4.textContent = lt > 1.62 ? 'Min, 15 Nov 2026' : '';
-    tf(c.v3, `scale(${d1.toFixed(3)})`); tf(c.v4, `scale(${d2.toFixed(3)})`);
-    c.in3.classList.toggle('focus', lt > 1.5 && lt < 1.62); c.in4.classList.toggle('focus', lt > 1.62 && lt < 1.85);
-    const dc = E.back(prog(lt, 1.75, 1.95)); tf(c.dchip, `scale(${dc.toFixed(3)})`); op(c.dchip, prog(lt, 1.75, 1.8));
-    // pick "Pasangan"
-    const sel = lt > 2.37;
-    c.o2.classList.toggle('sel', sel);
-    tf(c.o2, `scale(${(sel ? 1 + 0.05 * Math.exp(-(lt - 2.37) * 8) : 1).toFixed(4)})`);
-    op(c.chk, sel ? 1 : 0); tf(c.chk, `scale(${(sel ? E.back(prog(lt, 2.37, 2.55)) : 0).toFixed(3)})`);
-    // budget slider
+    // inputs
+    const vals = [typed('Labuan Bajo, Nusa Tenggara Timur', lt, 0.5, 58), typed('Jakarta (CGK)', lt, 1.1, 40), lt > 1.5 ? '11/12/2026' : '', lt > 1.62 ? '11/15/2026' : ''];
+    const foc = [lt > 0.45 && lt < 1.08, lt >= 1.08 && lt < 1.48, lt >= 1.48 && lt < 1.62, lt >= 1.62 && lt < 1.85];
+    c.ins.forEach((el, i) => {
+      el.classList.toggle('focus', foc[i]);
+      el.querySelector('.v').textContent = vals[i];
+      el.querySelector('.ph').style.display = vals[i] ? 'none' : '';
+      op(el.querySelector('.caret'), foc[i] && i < 2 && caretOn(lt) ? 1 : 0);
+    });
+    op(c.dhint, prog(lt, 1.75, 1.9));
+    setSel(c.o2, lt > 2.37, 2.37, lt);
+    // budget slider (Rp 0,5 – 15 jt)
     const bp = E.io3(prog(lt, 2.95, 3.45));
-    const val = lerp(0.5, 5.0, bp), w = (val - 0.5) / 14.5 * 964;
+    const val = lerp(0.5, 5.0, bp), w = (val - 0.5) / 14.5 * 896;
     c.bval.textContent = fmtJt(val);
     c.bfill.style.width = w.toFixed(1) + 'px';
-    c.knob.style.left = (48 + w).toFixed(1) + 'px';
-    tf(c.knob, `scale(${lt > 2.9 && lt < 3.5 ? 1.25 : 1})`);
-    // next button press
-    const np = lt > 3.85 && lt < 4.0;
-    tf(c.next, `scale(${np ? 0.94 : 1})`);
+    c.knob.style.left = (32 + w).toFixed(1) + 'px';
+    tf(c.knob, `scale(${lt > 2.9 && lt < 3.5 ? 1.3 : 1})`);
+    tf(c.next, `scale(${lt > 3.85 && lt < 4.0 ? 0.94 : 1})`);
     c.next.style.boxShadow = lt > 3.85 ? '0 0 0 6px rgba(53,168,255,.25),0 0 40px rgba(53,168,255,.9)' : '';
-    // summary rows
-    const rv = [lt > 1.1 ? 'Labuan Bajo' : '–', lt > 1.8 ? '4H 3M' : '–', sel ? '2 orang' : '–', lt > 3.0 ? fmtJt(val) + ' / orang' : '–'];
+    const rv = [lt > 1.1 ? 'Labuan Bajo' : '–', lt > 1.8 ? '4H 3M' : '–', lt > 2.37 ? '2 orang' : '–', lt > 3.0 ? fmtJt(val) + ' / orang' : '–'];
     c.r.forEach((r, i) => { if (r.textContent !== rv[i]) r.textContent = rv[i]; r.style.color = rv[i] !== '–' ? '#0F172A' : '#94A3B8'; });
-    // cursor (card coordinates)
-    c.cursor.update(lt, [[1.85, 700, 480], [2.3, 530, 670], [2.6, 530, 690], [2.9, 48, 860], [3.45, 48 + 299, 860], [3.55, 380, 900], [3.85, 900, 955], [4.2, 900, 955]], [2.35, 2.9, 3.85], [1.85, 4.3]);
+    tf(c.sum, `translateZ(${(50 + Math.sin(lt * 1.5) * 10).toFixed(1)}px)`);
+    // cursor in page coordinates (card A @y250, B @650, C @940)
+    c.cursor.update(lt, [[1.85, 700, 600], [2.3, 540, 830], [2.6, 540, 840], [2.9, 92, 1040], [3.45, 92 + 278, 1040], [3.55, 500, 1100], [3.85, 880, 1190], [4.2, 880, 1190]], [2.35, 2.9, 3.85], [1.85, 4.3]);
   },
 });
 CAPS.push([16.75, 18.3, 1, 'Tulis mau ke mana & kapan']);
 CAPS.push([18.3, 19.25, 2, 'Pergi sama siapa?']);
 CAPS.push([19.25, 20.45, 3, 'Atur budget-mu']);
 
-/* ---------- S13  Step 2 — Minat  20.5 – 24.1 ---------- */
-const S13_TILES = [['globe', 'Budaya & sejarah', 'Kampung adat, museum'], ['camera', 'Pemandangan alam', 'Bukit, pantai, air terjun'], ['food', 'Kuliner lokal', 'Warung, pasar malam'], ['bed', 'Santai & istirahat', 'Nggak mau dikejar waktu'], ['sun', 'Sunrise & sunset', 'Siap bangun subuh'], ['wave', 'Snorkeling laut', 'Terumbu, pulau kecil']];
+/* ---------- S13  Step 2 — "Apa yang kamu inginkan?"  20.5 – 24.1 ---------- */
+const S13_TILES = [['globe', 'Budaya & sejarah', 'Kampung adat, museum'], ['camera', 'Pemandangan alam', 'Bukit, pantai, air terjun'], ['food', 'Kuliner lokal', 'Warung, pasar malam'], ['bed', 'Santai & istirahat', 'Ngga mau dikejar waktu'], ['sun', 'Sunrise & sunset', 'Siap bangun subuh'], ['compass', 'Snorkeling laut', 'Terumbu, pulau kecil']];
+const S13_H = 1210;
 addScene({
   id: 's13', start: 20.5, end: 24.1, z: 2,
   build(root) {
-    const tiles = S13_TILES.map(([ic, t, d], i) => `<div class="opt s13t" style="left:${48 + (i % 3) * 329}px;top:${262 + Math.floor(i / 3) * 170}px;width:306px;height:150px"><div class="ico">${icon(ic, 28, '#35A8FF')}</div><div class="t">${t}</div><div class="d">${d}</div><div class="check" style="right:16px;top:16px;opacity:0">${icon('check', 20, '#fff', 3)}</div></div>`).join('');
-    const pace = [['bed', 'Santai · 2–3 aktivitas sehari', 'Banyak waktu luang, bisa bangun siang'], ['route', 'Seimbang · 4–5 aktivitas sehari', 'Cukup padat tapi masih ada jeda'], ['cal', 'Padat · 6+ aktivitas sehari', 'Maksimalkan tiap jam, siap capek']]
-      .map(([ic, t, d], i) => `<div class="opt s13p" style="left:48px;top:${668 + i * 96}px;width:964px;height:82px;padding:14px 22px;display:flex;align-items:center;gap:18px"><div class="ico" style="width:50px;height:50px">${icon(ic, 26, '#35A8FF')}</div><div><div style="font-size:21px;font-weight:700">${t}</div><div class="sub">${d}</div></div><div class="check" style="right:20px;top:24px;opacity:0">${icon('check', 20, '#fff', 3)}</div></div>`).join('');
-    root.innerHTML = `<div class="cam persp" style="perspective:2400px">
-      <div class="abs" id="g" style="left:200px;top:0;width:1520px;height:1060px;transform-style:preserve-3d;transform-origin:760px 400px">
-        <div class="card" style="left:0;top:0;width:1060px;height:1060px">
-          <div class="abs eyebrow" style="left:48px;top:44px">Penyusun itinerary</div>
-          <div class="abs" style="left:48px;top:74px;font-size:42px;font-weight:700;letter-spacing:-.02em">Apa yang kamu inginkan?</div>
-          <div class="abs" style="right:44px;top:66px;transform:scale(.82);transform-origin:100% 50%">${stepperHTML(2)}</div>
-          <div class="abs" style="left:48px;right:48px;top:152px;height:1px;background:#E2E8F0"></div>
-          <div class="abs" style="left:48px;top:178px;font-size:28px;font-weight:700">Apa yang bikin kamu semangat?</div>
-          <div class="abs sub" style="left:48px;top:222px;font-size:18px">Pilih minimal 2. Ini yang menentukan aktivitas di rencanamu.</div>
-          ${tiles}
-          <div class="abs" style="left:48px;top:618px;font-size:28px;font-weight:700">Mau seberapa padat jadwalnya?</div>
-          ${pace}
-          <div class="abs" style="left:48px;top:972px;font-size:22px;font-weight:600;height:66px;display:flex;align-items:center">Kembali</div>
-          <div class="abs btn" id="go" style="right:48px;top:966px">${icon('sparkle', 24, '#fff', 2.2)} Susun rencana saya</div>
-        </div>
-        <div class="card" id="sum" style="left:1100px;top:0;width:420px;height:500px">${summaryHTML([['Tujuan', 'x1', 'Labuan Bajo'], ['Durasi', 'x2', '4H 3M'], ['Tempo', 'x3', '–']], `<div id="tags" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px"><span class="chip">Alam</span><span class="chip">Sunrise</span><span class="chip">Snorkeling</span></div>`)}</div>
-        <div id="cur" class="abs" style="left:0;top:0;width:1520px;height:1060px"></div>
-      </div>
+    const tiles = S13_TILES.map(([ic, t, d], i) => uiChoice(32 + (i % 3) * 304, 116 + Math.floor(i / 3) * 156, 288, 140, ic, t, d, 's13t')).join('');
+    const pace = [['bed', 'Santai 2–3 aktivitas sehari', 'Banyak waktu luang, bisa bangun siang!', 'background:#D1D5DB;color:#334155'], ['route', 'Seimbang 4–5 aktivitas sehari', 'Cukup padat tapi masih ada jeda', 'background:#EAF5FF;color:#35A8FF'], ['cal', 'Padat 6++ aktivitas sehari', 'Maksimalkan tiap jam, siap capek', 'background:#FFF1E9;color:#FF6B24']]
+      .map(([ic, t, d, st], i) => `<div class="abs s13p" style="left:32px;top:${84 + i * 92}px;width:896px;height:78px;border:1.5px solid #E2E8F0;border-radius:16px;background:#fff;display:flex;align-items:center;gap:18px;padding:0 18px">
+        <div style="width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;${st}">${icon(ic, 24, 'currentColor', 2)}</div>
+        <div><div style="font-size:19px;font-weight:600">${t}</div><div style="font-size:15px;color:#64748B;margin-top:2px">${d}</div></div>
+        <div class="check" style="right:18px;top:24px;opacity:0;width:30px;height:30px">${icon('check', 17, '#fff', 3)}</div></div>`).join('');
+    root.innerHTML = `<div class="cam persp" style="perspective:2600px">
+      ${pageShell(S13_H, `
+        <div class="abs eyebrow" style="left:60px;top:128px;font-size:15px">Penyusun itinerary</div>
+        <div class="abs" style="left:60px;top:154px;font-size:42px;font-weight:700;letter-spacing:-.02em">Apa yang kamu inginkan?</div>
+        <div class="abs" style="right:60px;top:140px">${stepperHTML(2)}</div>
+        ${uiCard(60, 250, 960, 440, `<div class="abs" style="left:32px;top:28px;font-size:27px;font-weight:700">Apa yang bikin kamu semangat?</div>
+          <div class="abs" style="left:32px;top:72px;font-size:16px;color:#64748B">Pilih minimal 2. Ini yang nentuin aktivitas apa yang masuk rencana</div>${tiles}`)}
+        ${uiCard(60, 710, 960, 380, `<div class="abs" style="left:32px;top:28px;font-size:27px;font-weight:700">Mau seberapa padat jadwalnya?</div>${pace}`)}
+        <div class="abs" style="left:60px;top:1112px;height:62px;padding:0 30px;border-radius:999px;background:#fff;display:flex;align-items:center;font-size:20px;font-weight:600;box-shadow:0 2px 10px rgba(15,23,42,.06)">Kembali</div>
+        <div class="abs btn" id="go" style="left:700px;top:1110px;width:320px;height:66px;font-size:21px;font-weight:600">${icon('check', 22, '#fff', 2.8)} Susun rencana saya</div>
+        <div class="abs" id="sum" style="left:1060px;top:250px;width:400px;height:430px;background:#fff;border:1px solid #E2E8F0;border-radius:24px;box-shadow:0 10px 30px rgba(15,23,42,.08)">${summaryHTML([['Tujuan', 'x1', 'Labuan Bajo'], ['Durasi', 'x2', '4H 3M'], ['Tempo', 'x3', '–']], `<div style="height:1px;background:#E2E8F0;margin-top:16px"></div><div id="tags" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><span class="chip" style="font-size:15px">Alam</span><span class="chip" style="font-size:15px">Snorkeling</span><span class="chip" style="font-size:15px">Sunrise</span></div>`)}</div>
+        <div id="cur" class="abs" style="left:0;top:0;width:1520px;height:${S13_H}px"></div>`)}
       <div class="abs" id="burst" style="left:0;top:0;width:200px;height:200px;margin:-100px;border-radius:50%;background:#35A8FF;opacity:0"></div>
     </div>`;
     const q = s => root.querySelector(s);
-    const ctx = { g: q('#g'), tiles: [...root.querySelectorAll('.s13t')], pace: [...root.querySelectorAll('.s13p')], go: q('#go'), tags: [...root.querySelectorAll('#tags .chip')], tempo: q('#x3'), sum: q('#sum'), burst: q('#burst') };
+    const ctx = { g: q('.kpage'), tiles: [...root.querySelectorAll('.s13t')], pace: [...root.querySelectorAll('.s13p')], go: q('#go'), tags: [...root.querySelectorAll('#tags .chip')], tempo: q('#x3'), sum: q('#sum'), burst: q('#burst') };
     ctx.cursor = new Cursor(q('#cur'));
     return ctx;
   },
   update(lt, c, dur, root) {
     transition(root, lt, dur, 'whipL', 'cut', 0.22, 0.1);
-    // card-space Y of focus -> screen. Tiles ~430, pace ~760, button ~1000
-    const ty = track(lt, [[0, 100], [1.45, 100], [1.8, -180], [2.25, -180], [2.55, -360], [3.6, -360]], E.io3);
+    const fy = track(lt, [[0, 480], [1.45, 480], [1.8, 900], [2.25, 900], [2.55, 1080], [3.6, 1080]], E.io3);
     const zoomOut = E.i3(prog(lt, 2.95, 3.4));
-    tf(c.g, `translate3d(0px,${ty.toFixed(1)}px,${(-zoomOut * 300).toFixed(0)}px) rotateY(${(-7 + Math.sin(lt * 0.8) * 2 + 3).toFixed(2)}deg) rotateX(5deg) scale(.82)`);
-    tf(c.sum, `translateZ(${(60 + Math.sin(lt * 1.5) * 10).toFixed(1)}px)`);
+    camPage(c.g, S13_H, fy, 0.95, `translateZ(${(-zoomOut * 300).toFixed(0)}px) rotateY(${(-4 + Math.sin(lt * 0.8) * 1.5).toFixed(2)}deg) rotateX(4deg)`);
+    // picks: Pemandangan alam, Sunrise & sunset, Snorkeling laut ; tag order Alam · Snorkeling · Sunrise
     const picks = { 1: 0.55, 4: 0.9, 5: 1.25 };
-    c.tiles.forEach((t, i) => {
-      const tp = picks[i], on = tp !== undefined && lt > tp;
-      t.classList.toggle('sel', on);
-      const ck = t.querySelector('.check');
-      op(ck, on ? 1 : 0); tf(ck, `scale(${on ? E.back(prog(lt, tp, tp + 0.18)).toFixed(3) : 0})`);
-      tf(t, `scale(${(on ? 1 + 0.06 * Math.exp(-(lt - tp) * 9) : 1).toFixed(4)})`);
-    });
-    [0.55, 0.9, 1.25].forEach((tp, i) => { const p = E.back(prog(lt, tp + 0.05, tp + 0.25)); tf(c.tags[i], `scale(${p.toFixed(3)})`); op(c.tags[i], p > 0 ? 1 : 0); });
+    c.tiles.forEach((t, i) => { const tp = picks[i]; setSel(t, tp !== undefined && lt > tp, tp || 0, lt); });
+    [0.55, 1.25, 0.9].forEach((tp, i) => { const p = E.back(prog(lt, tp + 0.05, tp + 0.25)); tf(c.tags[i], `scale(${p.toFixed(3)})`); op(c.tags[i], p > 0 ? 1 : 0); });
     const ps = lt > 2.05;
-    c.pace.forEach((p, i) => { const on = i === 1 && ps; p.classList.toggle('sel', on); const ck = p.querySelector('.check'); op(ck, on ? 1 : 0); tf(ck, `scale(${on ? E.back(prog(lt, 2.05, 2.23)).toFixed(3) : 0})`); });
+    c.pace.forEach((p, i) => { const on = i === 1 && ps; p.style.borderColor = on ? '#35A8FF' : '#E2E8F0'; p.style.background = on ? '#EAF5FF' : '#fff'; p.style.boxShadow = on ? '0 0 0 3px rgba(53,168,255,.18),0 0 26px rgba(53,168,255,.45)' : ''; const ck = p.querySelector('.check'); op(ck, on ? 1 : 0); tf(ck, `scale(${on ? E.back(prog(lt, 2.05, 2.23)).toFixed(3) : 0})`); });
     c.tempo.textContent = ps ? 'Seimbang' : '–'; c.tempo.style.color = ps ? '#0F172A' : '#94A3B8';
     const pressed = lt > 2.85;
     tf(c.go, `scale(${pressed && lt < 3.0 ? 0.94 : 1})`);
     c.go.style.boxShadow = pressed ? `0 0 0 ${(6 + Math.sin(lt * 30) * 3).toFixed(1)}px rgba(53,168,255,.3),0 0 60px rgba(53,168,255,1)` : '';
-    c.cursor.update(lt, [[0.3, 700, 300], [0.55, 530, 335], [0.9, 200, 505], [1.25, 860, 505], [1.5, 860, 560], [2.05, 600, 806], [2.3, 700, 900], [2.85, 880, 1000], [3.3, 880, 1000]], [0.55, 0.9, 1.25, 2.05, 2.85], [0.25, 3.05]);
-    // circle burst from the button -> transition into the engine scene
+    tf(c.sum, `translateZ(${(50 + Math.sin(lt * 1.5) * 10).toFixed(1)}px)`);
+    // cursor in page coordinates (card A @y250, B @710)
+    c.cursor.update(lt, [[0.3, 700, 420], [0.55, 540, 440], [0.9, 236, 596], [1.25, 840, 596], [1.5, 840, 700], [2.05, 600, 940], [2.3, 700, 1020], [2.85, 860, 1143], [3.3, 860, 1143]], [0.55, 0.9, 1.25, 2.05, 2.85], [0.25, 3.05]);
     const bp = E.i4(prog(lt, 3.0, 3.6));
     const br = c.go.getBoundingClientRect(), rr = root.getBoundingClientRect();
     c.burst.style.left = (br.left + br.width / 2 - rr.left).toFixed(1) + 'px';
@@ -220,11 +235,11 @@ addScene({
         </svg>
         <div class="abs" style="left:0;right:0;top:300px;text-align:center">
           <div class="hud" style="font-size:20px">Menyusun rencana</div>
-          <div id="pct" style="font-family:Mono;font-weight:700;font-size:130px;color:#fff;text-shadow:0 0 30px rgba(53,168,255,.9)">0%</div>
+          <div id="pct" style="font-family:Montserrat;font-weight:700;font-size:130px;color:#fff;text-shadow:0 0 30px rgba(53,168,255,.9)">0%</div>
         </div>
         <div class="abs" id="ok" style="left:300px;top:300px;width:200px;height:200px;border-radius:50%;background:#16A34A;display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(22,163,74,.9);opacity:0">${icon('check', 120, '#fff', 3)}</div>
       </div>
-      <div class="abs" style="left:90px;top:330px;width:580px">${logs.map(l => `<div class="s14l" style="font-family:Mono;font-size:21px;color:#CFE8FF;margin-bottom:26px;display:flex;gap:12px;align-items:flex-start"><span class="s14k" style="color:#35A8FF;flex:0 0 auto">›</span><span class="s14x"></span></div>`).join('')}</div>
+      <div class="abs" style="left:90px;top:330px;width:580px">${logs.map(l => `<div class="s14l" style="font-family:Montserrat;font-size:21px;color:#CFE8FF;margin-bottom:26px;display:flex;gap:12px;align-items:flex-start"><span class="s14k" style="color:#35A8FF;flex:0 0 auto">›</span><span class="s14x"></span></div>`).join('')}</div>
       ${thumbs.map((t, i) => `<div class="abs thumb s14th" style="left:0;top:0;width:210px;height:140px;border:2px solid rgba(255,255,255,.85);box-shadow:0 0 30px rgba(53,168,255,.6)">${art(t)}</div>`).join('')}
     </div>`;
     const q = s => root.querySelector(s);
@@ -391,7 +406,7 @@ CAPS.push([28.25, 29.55, 0, 'Tinggal geser, jam diatur ulang otomatis']);
 CAPS.push([29.55, 30.95, 0, 'Ada yang bentrok? Kelana kasih saran']);
 
 /* ---------- S16  Route map  31.0 – 34.1 ---------- */
-const S16_PTS = [['Labuan Bajo', 1740, 430, 'Mulai', 'jungle'], ['Pulau Padar', 1200, 860, 'Hari 2', 'padar'], ['Pink Beach', 880, 760, 'Hari 2', 'pinkbeach'], ['Pulau Komodo', 650, 430, 'Hari 2', 'komodo'], ['Manta Point', 1020, 330, 'Hari 3', 'manta']];
+const S16_PTS = [['Labuan Bajo', 1740, 430, 'Mulai', 'labuanbajo'], ['Pulau Padar', 1200, 860, 'Hari 2', 'padar'], ['Pink Beach', 880, 760, 'Hari 2', 'pinkbeach'], ['Pulau Komodo', 650, 430, 'Hari 2', 'komodo'], ['Manta Point', 1020, 330, 'Hari 3', 'manta']];
 addScene({
   id: 's16', start: 31.0, end: 34.1, z: 2,
   build(root) {

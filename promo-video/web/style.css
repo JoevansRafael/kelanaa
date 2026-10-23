@@ -1,8 +1,7 @@
-@font-face { font-family: 'Noto'; src: url(fonts/NotoSans-VF.ttf); font-weight: 100 900; }
-@font-face { font-family: 'Display'; src: url(fonts/NotoSans-ExtraCondensedBlack.ttf); font-weight: 900; }
-@font-face { font-family: 'Cond'; src: url(fonts/NotoSans-CondensedBlack.ttf); font-weight: 900; }
-@font-face { font-family: 'Mono'; src: url(fonts/SourceCodePro-Regular.ttf); font-weight: 400; }
-@font-face { font-family: 'Mono'; src: url(fonts/SourceCodePro-Bold.ttf); font-weight: 700; }
+@font-face { font-family: 'Montserrat'; src: url(fonts/montserrat.regular.ttf); font-weight: 400; }
+@font-face { font-family: 'Montserrat'; src: url(fonts/montserrat.medium.ttf); font-weight: 500; }
+@font-face { font-family: 'Montserrat'; src: url(fonts/montserrat.semibold.ttf); font-weight: 600; }
+@font-face { font-family: 'Montserrat'; src: url(fonts/montserrat.bold.ttf); font-weight: 700 900; }
 
 :root {
   --blue: #35A8FF; --blue2: #4087C4; --orange: #FF6B24; --navy: #0F172A;
@@ -11,7 +10,7 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #0F172A; }
-body { font-family: 'Noto', sans-serif; color: #fff; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Montserrat', 'Noto Sans', sans-serif; font-variant-numeric: tabular-nums; color: #fff; -webkit-font-smoothing: antialiased; }
 #stage { position: absolute; inset: 0; overflow: hidden; background: #0F172A; }
 #bg { position: absolute; inset: 0; }
 #scenes { position: absolute; inset: 0; }
@@ -42,10 +41,10 @@ body { font-family: 'Noto', sans-serif; color: #fff; -webkit-font-smoothing: ant
 .cap-inner.warn .cap-num { background: #DC2626; box-shadow: 0 0 22px rgba(220,38,38,.9); }
 
 /* ---------- typography ---------- */
-.hud { font-family: 'Mono'; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: #35A8FF; font-size: 18px; }
-.hud.dim { color: rgba(148,197,255,.55); font-weight: 400; }
+.hud { font-family: 'Montserrat'; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: #35A8FF; font-size: 18px; }
+.hud.dim { color: rgba(148,197,255,.55); font-weight: 500; }
 .big { font-weight: 800; letter-spacing: -.035em; line-height: 1.02; color: #fff; }
-.display { font-family: 'Display'; font-weight: 900; text-transform: uppercase; letter-spacing: -.01em; line-height: .9; }
+.display { font-family: 'Montserrat'; font-weight: 700; letter-spacing: -.045em; line-height: .95; }
 .glowtext { text-shadow: 0 0 24px rgba(53,168,255,.85), 0 0 60px rgba(53,168,255,.45); }
 .orange { color: #FF6B24; }
 .blue { color: #35A8FF; }
